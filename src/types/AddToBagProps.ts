@@ -9,6 +9,7 @@ export interface AddToBagProps {
     name: string;
     price: number;
     currency: string;
+    productImage: string;
     description: string;
     price_id: string;
   

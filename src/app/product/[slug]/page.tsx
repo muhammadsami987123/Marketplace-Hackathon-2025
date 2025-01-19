@@ -96,8 +96,8 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 currency="USD"
                 price={data.price}
                 description={data.description}
-                images={data.images} // Pass the Sanity images array
-                name={data.name}
+                productImage={data.productImage} // Pass the Sanity images array
+                name={data.title}
                 key={`add-to-bag-${data._id}`}
                 price_id={data.price_id} id={data._id}                // id={data._id}
               />
@@ -105,8 +105,8 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 currency="USD"
                 price={data.price}
                 description={data.description}
-                images={data.images} // Pass the first resolved image URL
-                name={data.name}
+                productImage={data.productImage} // Pass the first resolved image URL
+                name={data.title}
                 key={`checkout-now-${data._id}`}
                 price_id={data.price_id}
                 id={data._id}

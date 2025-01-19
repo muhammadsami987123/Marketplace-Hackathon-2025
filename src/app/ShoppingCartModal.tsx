@@ -51,21 +51,21 @@ export default function ShoppingCartModal() {
                 <>
                   {Object.values(cartDetails ?? {}).map((entry) => {
                     // Handle image processing
-                    const imageUrl =
-                      entry.image &&
+                    const processedImage =
+                      entry.productImage &&
                       typeof entry.image === "object" &&
-                      "asset" in entry.image
-                        ? urlFor(entry.image).url()
+                      "asset" in entry.productImage
+                        ? urlFor(entry.productImage).url()
                         : "/fallback.jpg"; // Fallback image
-                    console.log("Entry Image Object:", entry.image);
-                    console.log("Processed Image URL:", imageUrl);
+                    console.log("Entry Image Object:", entry.productImage);
+                    console.log("Processed Image URL:", processedImage);
 
                     return (
                       <li key={entry.id} className="flex py-6">
                         <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                          {imageUrl ? (
+                          {processedImage ? (
                             <Image
-                              src={imageUrl}
+                              src={processedImage}
                               alt="Product image"
                               width={100}
                               height={100}
@@ -80,7 +80,7 @@ export default function ShoppingCartModal() {
                         <div className="ml-4 flex flex-1 flex-col">
                           <div>
                             <div className="flex justify-between text-base font-medium text-gray-900">
-                              <h3>{entry.name}</h3>
+                              <h3>{entry.title}</h3>
                               <p className="ml-4">${entry.price}</p>
                             </div>
                             <p className="mt-1 text-sm text-gray-500 line-clamp-2">

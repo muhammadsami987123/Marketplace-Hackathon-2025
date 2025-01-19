@@ -7,7 +7,7 @@ export interface ProductCart {
   currency: string;
   price: number;
   description: string;
-  images: string[]; // Assuming images is an array of URLs (update if different)
+  productImage: string ; // Assuming images is an array of URLs (update if different)
   name: string;
   key: string;
   price_id: string; // Specify as string if it's a unique identifier
@@ -15,7 +15,7 @@ export interface ProductCart {
 }
 
 export default function AddToBag(props: ProductCart) {
-  const { name, price, currency, description, price_id, images } = props;
+  const { name, price, currency, description, price_id, productImage } = props;
   const { checkoutSingleItem } = useShoppingCart();
 
   function buyNow(priceId: string) {
@@ -28,7 +28,7 @@ export default function AddToBag(props: ProductCart) {
     price: price,
     currency: currency,
     price_id: price_id,
-    images: images, // Pass images if needed
+    images: productImage, // Pass images if needed
   };
 
   return (
