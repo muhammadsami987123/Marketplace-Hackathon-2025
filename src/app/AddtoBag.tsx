@@ -5,7 +5,7 @@ import { useShoppingCart } from "use-shopping-cart";
 import { AddToBagProps } from "@/types/AddToBagProps";
 import { title } from "process";
 
-type productImages = {
+type productImage = {
   asset?: {
     url?: string;
   };
@@ -19,23 +19,22 @@ export default function AddToBag(props: AddToBagProps) {
     currency,
     description,
     price_id,
-    images: productImages = [],
+    images: productImage = [],
   } = props;
 
   const { addItem, handleCartClick } = useShoppingCart();
 
   // Generate image URLs
-  const imageUrls = productImages.map((productImages: productImages | string) => {
-    if (typeof productImages === "string") {
-      // Return it as-is, or transform if needed
-      return productImages;
-    } else if (productImages.asset && productImages.asset.url) {
-      // Use .asset.url
-      return productImages.asset.url;
-    }
-    // Fallback if neither condition is true
-    return "/fallback.jpg";
-  });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+const ImageUrls = productImage.map((productImage: productImage | string) => {
+  if (typeof productImage === "string") {
+    return productImage;
+  } else if (productImage.asset && productImage.asset.url) {
+    return productImage.asset.url;
+  }
+  return "/fallback.jpg";
+});
+
 
   // use-shopping-cart expects a cart item object:
   const product = {
@@ -43,7 +42,7 @@ export default function AddToBag(props: AddToBagProps) {
     name,
     title,
     price,
-    productImages: productImages,
+    productImages: productImage,
     currency,
     description,
     sku: price_id, // "sku" or "price_id" is required by use-shopping-cart

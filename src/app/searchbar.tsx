@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { client } from "@/sanity/lib/client";
 import Link from "next/link";
+import Image from "next/image";
 
 // Define the type for a product
 interface Product {
@@ -69,7 +70,7 @@ const SearchBar = () => {
                 <div className="flex items-center bg-gray-50 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer">
                   {/* Product Image */}
                   <div className="w-16 h-16 flex-shrink-0">
-                    <img
+                    <Image
                       src={item.imageUrl}
                       alt={item.title}
                       className="w-full h-full object-cover rounded-md"

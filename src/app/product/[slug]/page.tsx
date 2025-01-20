@@ -25,6 +25,7 @@ async function getData(slug: string): Promise<fullProduct | null> {
     return data || null;
   } catch (error) {
     console.error("Failed to fetch data:", error);
+    setError("Unable to load products. Please try again later."); 
     return null;
   }
 }
@@ -121,3 +122,9 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     </div>
   );
 }
+function setError(arg0: string) {
+  console.error(`Error: ${arg0}`);
+  throw new Error("Function not implemented.");
+}
+
+

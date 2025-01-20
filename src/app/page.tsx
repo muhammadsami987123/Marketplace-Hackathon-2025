@@ -12,6 +12,7 @@ export default function Home() {
       <ProductSection/>
       <Slider/>
       <ImageGrid/> 
+      
     </div>
   )
 }
