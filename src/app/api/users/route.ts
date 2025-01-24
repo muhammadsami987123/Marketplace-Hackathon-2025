@@ -467,6 +467,7 @@ const users =
     "name": "Perry Price",
     "id": "93"
   }
+  
 ]
 export async function GET() {
   return NextResponse.json(users);

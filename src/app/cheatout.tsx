@@ -5,7 +5,7 @@ import { useShoppingCart } from "use-shopping-cart";
 
 export interface ProductCart {
   currency: string;
-  price: number;
+  price: number;   
   description: string;
   productImage: string ; // Assuming images is an array of URLs (update if different)
   name: string;

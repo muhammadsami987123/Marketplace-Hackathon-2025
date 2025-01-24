@@ -16,13 +16,13 @@ const About = () => {
           className="absolute inset-0 object-cover"
         />
       </div>
-      <div className="bg-white p-8 text-center rounded-lg">
-        <h2 className="text-3xl text-center font-bold mb-4">Get In Touch With Us</h2>
+      {/* <div className="bg-white p-8 text-center rounded-lg"> */}
+        {/* <h2 className="text-3xl text-center font-bold mb-4">Get In Touch With Us</h2>
         <p className="text-gray-600 mb-8">
           For more information about our products & services, please feel free to drop us an email.
-        </p>
+        </p> */}
         <ContactForm />
-      </div>
+      {/* </div> */}
       <div className="container mx-auto px-6 py-12">
         <FeatureSection />
       </div>
