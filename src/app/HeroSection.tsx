@@ -1,11 +1,52 @@
-"use client";
+"use client"; // Required for client-side interactivity
 
-import React from "react";
+import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation"; // Correct import for router in Next.js 13+
+import { Button } from "@/components/ui/button";
+import { client } from "@/sanity/lib/client"; // Import Sanity client
+import imageUrlBuilder from "@sanity/image-url"; // Import imageUrlBuilder
+import { useEffect, useState } from "react";
+import { SanityImageSource } from "@sanity/image-url/lib/types/types";
+import { useRouter } from "next/navigation"; // Correct import for Next.js 13+
 
-function HeroSection() {
-  const router = useRouter(); // Initialize useRouter hook
+// Initialize the image URL builder
+const builder = imageUrlBuilder(client);
+
+function urlFor(source: SanityImageSource) {
+  return builder.image(source);
+}
+
+export default function ModernFurniture() {
+  const [heroBanner, setHeroBanner] = useState({
+    title: "",
+    subtitle: "",
+    description: "",
+    contactNumber: "",
+    websiteUrl: "",
+    image: "",
+    discount: "",
+  });
+
+  const router = useRouter(); // Initialize the router
+
+  // Fetch hero banner data from Sanity
+  useEffect(() => {
+    const fetchHeroBanner = async () => {
+      const query = `*[_type == "heroBanner"][0]{
+        title,
+        subtitle,
+        description,
+        contactNumber,
+        websiteUrl,
+        "image": image.asset->url,
+        discount
+      }`;
+      const data = await client.fetch(query);
+      setHeroBanner(data);
+    };
+
+    fetchHeroBanner();
+  }, []);
 
   const handleAllProducts = () => {
     try {
@@ -16,48 +57,76 @@ function HeroSection() {
   };
 
   return (
-    <section className="relative bg-white">
-      <div className="bg-gray-200">
-        <div className="container mx-auto p-4 flex flex-col md:flex-row justify-center items-center">
-          {/* Image Container */}
-          <div className="relative w-full md:w-[60%] h-[300px] md:h-[600px] bg-gray-200 rounded-lg overflow-hidden">
-            <Image
-              src="/hero.jpg"
-              alt="New Collection"
-              className="w-full h-full object-cover"
-              layout="responsive"
-              width={1200}
-              height={600}
-              priority
-            />
+    <div className="min-h-screen bg-[#f5f0e8]">
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid lg:grid-cols-2 gap-8 items-center">
+          {/* Left Column */}
+          <div className="space-y-6">
+            {/* Main Content */}
+            <div className="space-y-4 max-w-xl">
+              <h1 className="text-4xl md:text-5xl font-bold">
+                {heroBanner.title}{" "}
+                <span className="text-[#d4bc8b] block">
+                  {heroBanner.subtitle}
+                </span>
+              </h1>
+
+              <div className="space-y-6">
+                <h2 className="font-semibold">About Product</h2>
+                <p className="text-gray-600 leading-relaxed">
+                  {heroBanner.description ||
+                    "Lorem ipsum dolor sit amet, consectetur adipiscing est et dolor. Curabitur ac consequat enim. Duis non tellus sem. Sed vitae dolor a augue volutpat ultricies non in est."}
+                </p>
+
+                {/* CTAs */}
+                <div className="flex flex-wrap gap-4">
+                  <Link
+                    href={`tel:${heroBanner.contactNumber || "+1234567890"}`}
+                    className="flex items-center text-gray-600 hover:text-gray-900"
+                  >
+                    <span className="mr-2">☎</span>
+                    CONTACT {heroBanner.contactNumber || "555 6666"}
+                  </Link>
+                  <Button
+                    className="bg-black text-white hover:bg-gray-800"
+                    aria-label="Buy Now"
+                    onClick={handleAllProducts}
+                  >
+                    ORDER NOW
+                  </Button>
+                </div>
+
+                {/* Website URL */}
+                
+              </div>
+            </div>
           </div>
 
-          {/* Text Overlay */}
-          <div className="absolute md:static top-28 left-0 w-full md:w-[40%] bg-[#fdf5e6] flex flex-col justify-start items-start text-black text-left p-6 sm:p-8 space-y-4 rounded-lg shadow-md">
-            <h1 className="text-xs sm:text-sm uppercase font-semibold text-gray-500 mb-2">
-              New Arrival
-            </h1>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#7a6229] mb-6">
-              Discover Our
-              <br /> New Collection
-            </h2>
-            <p className="text-sm sm:text-md text-gray-600 mb-6">
-              Explore the latest trends and collections that bring style and
-              comfort to your home. Lorem ipsum dolor sit amet, consectetur
-              adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis.
-            </p>
-            <button
-              className="bg-[#7a6229] text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded hover:bg-[#5c491f] transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7a6229]"
-              aria-label="Buy Now"
-              onClick={handleAllProducts}
-            >
-              Buy Now
-            </button>
+          {/* Right Column - Image */}
+          <div className="relative">
+            <div className="relative aspect-[4/3] w-full">
+              {heroBanner.image && (
+                <Image
+                  src={urlFor(heroBanner.image).url()} // Use urlFor to generate the image URL
+                  alt="Modern dining set with geometric wall pattern"
+                  fill
+                  className="object-cover rounded-md"
+                />
+              )}
+              {/* Sale Badge */}
+              <div className="absolute top-4 right-4 bg-black text-white px-4 py-2 rounded-sm">
+                <span className="text-xl font-bold">
+                  {heroBanner.discount || "50%"}
+                </span>
+                <span className="block text-sm">OFF</span>
+              </div>
+            </div>
+
+            {/* Social Icons */}
+            
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
-
-export default HeroSection;
