@@ -1,46 +1,58 @@
 'use client';
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { client } from '@/sanity/lib/client'; // Adjust the path as necessary
+import { Slide } from '@/types/slide'; // Import the Slide type
 
 const Slider = () => {
-  // State to track the current slide index
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [slides, setSlides] = useState<Slide[]>([]);
 
-  // Array of slide images
-  const slides = [
-    { image: '/slider1.jpg', alt: 'Room Inspiration 1' },
-    { image: '/slider2.jpg', alt: 'Room Inspiration 2' },
-    // Add more slides as needed
-  ];
+  const SLIDE_DURATION = 5000; // 5 seconds
 
-  // Function to go to the next slide
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
-  };
+  // Fetch slides from Sanity
+  useEffect(() => {
+    const fetchSlides = async () => {
+      const query = '*[_type == "slide"]{image{asset->{url}}, alt}';
+      const result: Slide[] = await client.fetch(query);
+      setSlides(result);
+    };
 
-  // Function to go to the previous slide
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? slides.length - 1 : prevIndex - 1
-    );
-  };
+    fetchSlides();
+  }, []);
 
-  // Function to go to a specific slide by index (dots)
+  // Automatically transition slides
+  useEffect(() => {
+    if (slides.length > 0) {
+      const timer = setInterval(() => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
+      }, SLIDE_DURATION);
+
+      return () => clearInterval(timer); // Cleanup on unmount
+    }
+  }, [slides.length]);
+
+ 
+
   const goToSlide = (index: number) => {
     setCurrentIndex(index);
   };
 
+  if (slides.length === 0) {
+    return <div>Loading...</div>; // or some loading spinner
+  }
+
   return (
-    <div className="bg-[#fff3e3] mx-auto py-10">
-      <div className="container mx-auto px-4">
+    <div className="bg-[#f5f0e8] mx-auto py-4 px-4 sm:px-24">
+      <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-8">
           {/* Left Section - Text */}
-          <div>
-            <h2 className="text-4xl font-bold leading-tight text-gray-800">
+          <div className="text-center md:text-left">
+            <h2 className="text-2xl sm:text-4xl font-bold leading-tight text-gray-800">
               50+ Beautiful rooms<br /> inspiration
             </h2>
-            <p className="mt-4 text-gray-600">
-              Our designer already made a lot of beautiful<br /> prototypes of rooms that inspire you
+            <p className="mt-4 text-gray-600 text-sm sm:text-base">
+              Our designer already made a lot of beautiful<br /> prototypes of rooms that inspire you.
             </p>
             <button className="mt-6 px-6 py-3 bg-yellow-500 text-white font-medium rounded-lg shadow-md hover:bg-yellow-600 transition">
               Explore More
@@ -48,35 +60,35 @@ const Slider = () => {
           </div>
 
           {/* Right Section - Carousel */}
-          <div className="relative">
-            {/* Slide Images */}
-            <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
+          <div className="relative overflow-hidden">
+            <div
+              className="flex transition-transform duration-1000 ease-in-out"
+              style={{
+                transform: `translateX(-${currentIndex * 100}%)`,
+                width: `${slides.length * 100}%`,
+              }}
+            >
               {slides.map((slide, index) => (
-                <div key={index} className="relative w-full">
-                  <Image
-                    src={slide.image}
-                    alt={slide.alt}
-                    className="rounded-lg shadow-lg"
-                    width={800} // Set width for better layout control
-                    height={500} // Set height for better layout control
-                  />
+                <div
+                  key={index}
+                  className="flex-shrink-0 w-full h-[200px] sm:h-[400px] relative"
+                  style={{ flex: `0 0 100%` }}
+                >
+                  {/* Image Wrapper */}
+                  <div className="w-[600px] h-full md:w-[500px]  relative lg:w-[500px] md:relative sm:w-[800px] ">
+                    <Image
+                      src={slide.image.asset.url}
+                      alt={slide.alt}
+                    fill
+                      className=" " // Prevents zooming and ensures the image fits
+                    />
+                  </div>
                 </div>
               ))}
             </div>
 
-            {/* Navigation Buttons */}
-            <button
-              onClick={prevSlide}
-              className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-100 text-gray-800 p-2 rounded-full shadow hover:bg-gray-200 transition"
-            >
-              ❮
-            </button>
-            <button
-              onClick={nextSlide}
-              className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-100 text-gray-800 p-2 rounded-full shadow hover:bg-gray-200 transition"
-            >
-              ❯
-            </button>
+            {/* Navigation Buttons (Visible on Mobile Only) */}
+          
           </div>
         </div>
 
@@ -86,8 +98,8 @@ const Slider = () => {
             <span
               key={index}
               onClick={() => goToSlide(index)}
-              className={`w-3 h-3 rounded-full cursor-pointer transition ${
-                currentIndex === index ? 'bg-yellow-500' : 'bg-gray-300'
+              className={`w-4 h-4 rounded-full cursor-pointer transition ${
+                currentIndex === index ? "bg-yellow-500" : "bg-gray-300"
               }`}
             ></span>
           ))}

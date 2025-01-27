@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 export default function ImageGrid() {
   return (
-    <div className="bg-white py-9">
+    <div className="bg-[#f5f0e8] py-9">
       {/* Header */}
       <h2 className="text-xl font-semibold text-center">Share your setup with</h2>
       <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-center">#FuniroFurniture</h2>

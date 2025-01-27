@@ -6,7 +6,7 @@ import Slider from "./slider";
 
 export default function Home() {
   return (
-    <div>
+    <div className="bg-[#f5f0e8]">
       <HeroSection />
       <BrowseTheRange />
       <ProductSection/>

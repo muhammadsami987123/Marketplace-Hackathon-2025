@@ -46,7 +46,7 @@ export default function ProductSection() {
   };
 
   return (
-    <section className="p-4 px-10 rounded-lg">
+    <section className="bg-[#f5f0e8] p-4 px-10 rounded-lg">
       <h2 className="py-4 text-3xl font-bold text-center mb-8">Our Products</h2>
 
       {/* Product Grid */}
@@ -78,7 +78,7 @@ export default function ProductSection() {
       {visibleProductsCount < products.length && (
         <div className="flex justify-center mt-10">
           <button
-            className="text-white px-6 py-3 rounded-md text-lg font-bold bg-yellow-600 hover:bg-yellow-800 transition-colors"
+            className="text-white px-6 py-3 rounded-md text-lg font-bold bg-yellow-500 hover:bg-yellow-600 transition-colors"
             onClick={handleShowMore}
             aria-label="Show more products"
           >
