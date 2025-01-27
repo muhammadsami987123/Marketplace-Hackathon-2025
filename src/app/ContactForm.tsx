@@ -40,7 +40,7 @@ const FurniroContact = () => {
       
 
       {/* Hero Section - Responsive text sizes */}
-      <div className="bg-white px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+      <div className="bg-[#f5f0e8] px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-medium text-center text-gray-900 mb-4 font-serif">
             Contact

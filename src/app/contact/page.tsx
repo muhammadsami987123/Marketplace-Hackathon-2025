@@ -7,7 +7,7 @@ import Image from "next/image";
 
 const About = () => {
   return (
-    <div className="bg-white">
+    <div className="bg-[#f5f0e8]">
       <div className="relative w-full h-[300px]">
         <Image
           src="/about.jpg"

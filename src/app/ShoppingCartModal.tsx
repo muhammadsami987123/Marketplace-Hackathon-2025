@@ -23,24 +23,28 @@ export default function ShoppingCartModal() {
 
   async function handleCheckoutClick(event: { preventDefault: () => void; }) {
     event.preventDefault();
+    console.log("Button clicked"); // Verify click is working
     try {
+      console.log("Redirect to Checkout triggered");
       const result = await redirectToCheckout();
+      console.log("Redirect to Checkout Result:", result); // Log result
       if (result?.error) {
-        console.log("Checkout Error:", result.error);
+        console.error("Checkout Error:", result.error); // Log errors
       }
     } catch (error) {
-      console.error("Checkout Exception:", error);
+      console.error("Checkout Exception:", error); // Catch and log any exceptions
     }
   }
+  
 
   return (
-    <Sheet open={shouldDisplayCart} onOpenChange={() => handleCartClick()}>
-      <SheetContent className="sm:max-w-lg w-[90vw]">
+    <Sheet  open={shouldDisplayCart} onOpenChange={() => handleCartClick()}  >
+      <SheetContent className="sm:max-w-lg w-[90vw] bg-[#f5f0e8] ">
         <SheetHeader>
           <SheetTitle>Shopping Cart</SheetTitle>
         </SheetHeader>
 
-        <div className="h-full flex flex-col justify-between">
+        <div className=" h-full flex flex-col justify-between">
           <div className="mt-8 flex-1 overflow-y-auto">
             <ul className="-my-6 divide-y divide-gray-200">
               {cartCount === 0 ? (

@@ -29,15 +29,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/logo-top.png" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-              <CartProvider>
-       <Navbar />
-       <ShoppingCartModal/>
-        {children}
-        <Footer />
-       </CartProvider>
+        <CartProvider>
+          <Navbar />
+          <ShoppingCartModal />
+          {children}
+          <Footer />
+        </CartProvider>
       </body>
     </html>
   );

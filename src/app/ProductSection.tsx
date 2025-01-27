@@ -68,7 +68,7 @@ export default function ProductSection() {
               <p className="text-gray-600 mb-2">{product.description
                 ? product.description.split(" ").slice(0, 20).join(" ") + "..."
                 : "No description available"}</p>
-              <p className="text-lg font-bold mb-4">Rp {product.price}</p>
+              <p className="text-lg font-bold mb-4">${product.price}</p>
             </div>
           </Link>
         ))}

@@ -32,7 +32,7 @@ function BlogPostLayout() {
   ];
 
   return (
-    <section className="bg-white bg-center">
+    <section className="bg-[#f5f0e8] bg-center">
       {/* Blog Header Image */}
       <div className="relative w-full h-[300px]">
         <Image
