@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import FeatureSection from "../FeatureSection";
 import Link from "next/link";
 import Image from "next/image";
 import { sanityClient } from "@/sanity/lib/sanity";
+import FilterInterface from "../filter";
 
 interface Product {
   id: string;
@@ -24,16 +25,21 @@ interface SanityProduct {
   productImage: string | null;
 }
 
-const ITEMS_PER_PAGE = 8; // Display 6 products per page
-
 function ProductSection() {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [priceRange, setPriceRange] = useState<number>(500); // Default price range
-  const [category, setCategory] = useState<string>("all"); // Default category
-  const [showFilters, setShowFilters] = useState<boolean>(false); // Toggle filters visibility
-  const [currentPage, setCurrentPage] = useState<number>(1); // Current page
 
+  // Filtering + Sorting
+  const [priceRange, setPriceRange] = useState<number>(500);
+  const [category, setCategory] = useState<string>("all");
+  const [showFilters, setShowFilters] = useState<boolean>(false);
+
+  // Pagination + Sorting
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(8);
+  const [sortOption, setSortOption] = useState<string>("default");
+
+  // Fetch products from Sanity
   useEffect(() => {
     const fetchProducts = async () => {
       const query = `*[_type == "product"] {
@@ -47,18 +53,18 @@ function ProductSection() {
 
       try {
         const sanityProducts: SanityProduct[] = await sanityClient.fetch(query);
-        const formattedProducts = sanityProducts.map((product) => ({
-          id: product._id,
-          name: product.title || "Unnamed Product",
-          slug: product.slug,
-          description: product.description
-            ? product.description.split(" ").slice(0, 20).join(" ") + "..."
+        const formatted = sanityProducts.map((p) => ({
+          id: p._id,
+          name: p.title || "Unnamed Product",
+          slug: p.slug,
+          description: p.description
+            ? p.description.split(" ").slice(0, 20).join(" ") + "..."
             : "No description available",
-          price: product.price,
-          image: product.productImage || "/placeholder.jpg",
+          price: p.price,
+          image: p.productImage || "/placeholder.jpg",
         }));
-        setProducts(formattedProducts);
-        setFilteredProducts(formattedProducts); // Initialize with all products
+        setProducts(formatted);
+        setFilteredProducts(formatted);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -67,137 +73,181 @@ function ProductSection() {
     fetchProducts();
   }, []);
 
-  const applyFilters = () => {
-    const filtered = products.filter(
-      (product) =>
-        product.price <= priceRange &&
-        (category === "all" ||
-          product.name.toLowerCase().includes(category.toLowerCase()))
-    );
-    setFilteredProducts(filtered);
-    setCurrentPage(1); // Reset to the first page
-  };
+  /**
+   * Filter & Sort Logic, wrapped in useCallback so it can safely be used in useEffect.
+   */
+  const applyFiltersAndSorting = useCallback(
+    (items: Product[]) => {
+      // Use 'const' because we're not reassigning the reference
+      const result = items.filter(
+        (product) =>
+          product.price <= priceRange &&
+          (category === "all" ||
+            product.name.toLowerCase().includes(category.toLowerCase()))
+      );
 
-  // Calculate pagination data
-  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+      // Sorting
+      switch (sortOption) {
+        case "name-asc":
+          result.sort((a, b) => a.name.localeCompare(b.name));
+          break;
+        case "name-desc":
+          result.sort((a, b) => b.name.localeCompare(a.name));
+          break;
+        case "price-asc":
+          result.sort((a, b) => a.price - b.price);
+          break;
+        case "price-desc":
+          result.sort((a, b) => b.price - a.price);
+          break;
+        // "default" => no sort
+      }
+
+      return result;
+    },
+    [priceRange, category, sortOption]
+  );
+
+  // Whenever products, priceRange, category, or sortOption changes, re-apply
+  useEffect(() => {
+    const newFiltered = applyFiltersAndSorting(products);
+    setFilteredProducts(newFiltered);
+    setCurrentPage(1); // reset page when filters change
+  }, [products, applyFiltersAndSorting]);
+
+  // Pagination
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedProducts = filteredProducts.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
+    startIndex,
+    startIndex + itemsPerPage
   );
 
   return (
     <div className="min-h-screen bg-[#f5f0e8]">
-      <div className="container mx-auto px-4 py-6">
+      {/* Container */}
+      <div className="container mx-auto px-4 py-8">
+        {/* Hero Banner */}
         <header
-          className="relative bg-cover bg-center h-64"
+          className="relative h-48 md:h-64 w-full bg-center bg-cover rounded-md overflow-hidden mb-6"
           style={{ backgroundImage: "url('/shop.jpg')" }}
         >
-          <div className="absolute inset-0 bg-opacity-50"></div>
+          {/* Optional overlay and heading */}
+          {/* <div className="absolute inset-0 bg-black bg-opacity-30" />
+          <div className="relative h-full flex items-center justify-center">
+            <h1 className="text-white font-bold text-2xl md:text-4xl">Our Shop</h1>
+          </div> */}
         </header>
 
-        {/* Filter Toggle Button */}
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-6 py-8">
-          <h2 className="text-3xl font-bold text-center sm:text-left">Our All Products</h2>
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="bg-gray-800 text-white px-4 py-2 mt-4 sm:mt-0 rounded-md hover:bg-gray-700 transition"
-          >
-            {showFilters ? "Hide Filters" : "Show Filters"}
-          </button>
-        </div>
+        {/* Filter Bar */}
+        <FilterInterface
+          totalResults={filteredProducts.length}
+          itemsPerPage={itemsPerPage}
+          onItemsPerPageChange={(value) => setItemsPerPage(value)}
+          sortOption={sortOption}
+          onSortOptionChange={(value) => setSortOption(value)}
+          onFilterClick={() => setShowFilters(!showFilters)}
+        />
 
-        {/* Filters Section */}
+        {/* Additional Filters (if toggled) */}
         {showFilters && (
-          <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Price Range Filter */}
+          <div className="mt-4 mb-6 p-4 bg-white rounded-md shadow-sm">
+            <div className="flex flex-col md:flex-row gap-4 md:items-center">
               <div className="flex flex-col">
-                <label htmlFor="priceRange" className="text-gray-600 font-semibold mb-2">
-                  Max Price: <span className="text-gray-800">${priceRange}</span>
+                <label htmlFor="priceRange" className="text-sm font-medium">
+                  Max Price: {priceRange}
                 </label>
                 <input
                   id="priceRange"
                   type="range"
                   min="0"
-                  max="1000"
-                  step="50"
+                  max="2000"
                   value={priceRange}
                   onChange={(e) => setPriceRange(Number(e.target.value))}
-                  className="w-full accent-gray-800"
+                  className="mt-2"
                 />
               </div>
 
-              {/* Category Filter */}
               <div className="flex flex-col">
-                <label htmlFor="category" className="text-gray-600 font-semibold mb-2">
+                <label htmlFor="category" className="text-sm font-medium">
                   Category
                 </label>
                 <select
                   id="category"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="bg-gray-100 border rounded px-3 py-2"
+                  className="border border-gray-300 rounded px-2 py-1 mt-2"
                 >
                   <option value="all">All</option>
-                  <option value="furniture">Furniture</option>
-                  <option value="electronics">Electronics</option>
-                  <option value="clothing">Clothing</option>
+                  <option value="shoes">Shoes</option>
+                  <option value="bag">Bag</option>
+                  <option value="dress">Dress</option>
+                  {/* Add more categories as needed */}
                 </select>
-              </div>
-
-              {/* Apply Filter Button */}
-              <div className="flex items-center sm:col-span-2 lg:col-span-1">
-                <button
-                  onClick={applyFilters}
-                  className="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition w-full"
-                >
-                  Apply Filters
-                </button>
               </div>
             </div>
           </div>
         )}
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {paginatedProducts.map((product) => (
-            <Link key={product.id} href={`/product/${product.slug}`}>
-              <div className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-all cursor-pointer">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  width={500}
-                  height={500}
-                  className="w-full h-60 object-cover mb-4 rounded-lg transition-all"
-                />
-                <h3 className="text-xl font-bold mb-2">{product.name}</h3>
-                <p className="text-gray-600 mb-2">{product.description}</p>
-                <p className="text-lg font-bold mb-4">${product.price}</p>
+            <Link href={`/product/${product.slug}`} key={product.id}>
+              <div className="bg-white p-4 rounded-md shadow-sm hover:shadow-md transition-all">
+                <div className="relative w-full h-48 mb-4">
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    fill
+                    className="object-cover rounded-md"
+                  />
+                </div>
+                <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
+                <p className="text-gray-600 text-sm line-clamp-2 mb-2">
+                  {product.description}
+                </p>
+                <p className="text-base font-bold">${product.price}</p>
               </div>
             </Link>
           ))}
         </div>
 
-        {/* Pagination Controls */}
-        <div className="flex justify-center items-center mt-8">
-          <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className="px-4 py-2 bg-white text-black rounded-md mr-2 disabled:bg-gray-200 disabled:opacity-50"
-          >
-            Previous
-          </button>
-          <span className="px-4 py-2">{`Page ${currentPage} of ${totalPages}`}</span>
-          <button
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-white text-black rounded-md ml-2 disabled:bg-gray-200 disabled:opacity-50"
-          >
-            Next
-          </button>
-        </div>
+        {/* Numbered Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center gap-2 mt-8 justify-center">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+              const isActive = page === currentPage;
+              return (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`px-4 py-2 rounded-md transition-colors 
+                    ${
+                      isActive
+                        ? "bg-[#97733f] text-white" // Active page
+                        : "bg-[#F6EDE5] hover:bg-[#f2e6dc] text-black" // Inactive page
+                    }
+                  `}
+                >
+                  {page}
+                </button>
+              );
+            })}
+
+            {/* Next Button */}
+            {currentPage < totalPages && (
+              <button
+                onClick={() => setCurrentPage((prev) => prev + 1)}
+                className="px-4 py-2 rounded-md transition-colors bg-[#F6EDE5] hover:bg-[#f2e6dc] text-black"
+              >
+                Next
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
+      {/* Feature Section */}
       <FeatureSection />
     </div>
   );

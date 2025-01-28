@@ -8,7 +8,7 @@ const ReturnsPolicy = () => {
           Returns & Refunds Policy
         </h1>
         <p className="text-lg mb-8 text-center text-gray-600">
-          **Last Updated:** [Insert Date]
+          **Last Updated:** [28-jan-2025]
         </p>
         <p className="mb-8 text-lg text-gray-600">
           At <strong>Furniro</strong>, we want you to be completely satisfied with your purchase. If for any reason you are not happy with your product, we offer a hassle-free return process. Please read the details of our Returns & Refunds Policy below.

@@ -9,7 +9,7 @@ const PrivacyPolicy = () => {
           Privacy Policy
         </h1>
         <p className="text-lg mb-8 text-center text-gray-600">
-          **Last Updated:** [Insert Date]
+          **Last Updated:** [28-01-2025]
         </p>
         <p className="mb-8 text-lg text-gray-600">
           Welcome to <strong>Furniro</strong>. We value your privacy and are committed to protecting your personal information. This policy outlines how we collect, use, and safeguard your data when you visit or make a purchase from our website,{' '}

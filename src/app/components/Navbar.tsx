@@ -138,7 +138,7 @@ const Navbar = () => {
 
               {/* Search Results Dropdown */}
               {query.length > 1 && (
-                <div className="absolute top-12 left-0 bg-white shadow-lg rounded-lg w-64 max-h-80 overflow-y-auto z-50">
+                <div className="absolute top-12 left-0 bg-white shadow-lg rounded-lg w-80 max-h-80 overflow-y-auto z-50">
                   {loading && <p className="text-gray-600 p-4">Loading...</p>}
                   {!loading && results.length > 0 && (
                     <ul>

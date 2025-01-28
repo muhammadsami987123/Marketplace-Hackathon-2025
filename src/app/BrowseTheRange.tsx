@@ -23,7 +23,6 @@ export default function BrowseTheRange() {
       const query = `*[_type == "category"]{
         title,
         "image": image.asset->url,
-      
       }`;
       const data = await client.fetch(query);
       setCategories(data);
@@ -37,9 +36,10 @@ export default function BrowseTheRange() {
     const container = containerRef.current;
     if (container) {
       const scrollAmount = container.offsetWidth;
-      const newPosition = direction === 'left'
-        ? Math.max(scrollPosition - scrollAmount, 0)
-        : Math.min(scrollPosition + scrollAmount, container.scrollWidth - container.offsetWidth);
+      const newPosition =
+        direction === 'left'
+          ? Math.max(scrollPosition - scrollAmount, 0)
+          : Math.min(scrollPosition + scrollAmount, container.scrollWidth - container.offsetWidth);
 
       container.scrollTo({
         left: newPosition,
@@ -48,6 +48,27 @@ export default function BrowseTheRange() {
       setScrollPosition(newPosition);
     }
   };
+
+  // Automatically scroll every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const container = containerRef.current;
+      if (container) {
+        const newPosition =
+          scrollPosition + container.offsetWidth >= container.scrollWidth
+            ? 0 // Reset to the start if at the end
+            : scrollPosition + container.offsetWidth;
+
+        container.scrollTo({
+          left: newPosition,
+          behavior: 'smooth',
+        });
+        setScrollPosition(newPosition);
+      }
+    }, 5000); // 5 seconds interval
+
+    return () => clearInterval(interval); // Clear interval on component unmount
+  }, [scrollPosition]);
 
   useEffect(() => {
     const container = containerRef.current;
