@@ -25,7 +25,7 @@ async function getData(slug: string): Promise<fullProduct | null> {
     return data || null;
   } catch (error) {
     console.error("Failed to fetch data:", error);
-    setError("Unable to load products. Please try again later."); 
+    setError("Unable to load products. Please try again later.");
     return null;
   }
 }
@@ -36,6 +36,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
   const [data, setData] = useState<fullProduct | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [quantity, setQuantity] = useState(1); // State for quantity
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,11 +67,15 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
   const imageUrls = data.productImage ? [data.productImage] : ["/fallback.jpg"];
 
+  // Quantity increment and decrement functions
+  const incrementQuantity = () => setQuantity((prev) => prev + 1);
+  const decrementQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+
   return (
     <div className="bg-[#f5f0e8]">
       <div className="mx-auto max-w-screen-xl px-4 md:px-8">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          <ImageGallery  images={imageUrls}  />
+          <ImageGallery images={imageUrls} />
           <div className="md:py-8">
             <h2 className="text-2xl font-bold text-gray-800 lg:text-3xl">{data.title}</h2>
             <div className="mb-6 flex items-center md:mb-10 py-4">
@@ -92,39 +97,64 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
               <Truck className="w-6 h-6" />
               <span className="text-sm">2-4 Day Shipping</span>
             </div>
+
+            {/* Quantity Selector */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+              <div className="flex items-center border border-gray-300 rounded-lg w-fit">
+                <button
+                  onClick={decrementQuantity}
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-l-lg transition-colors"
+                >
+                  -
+                </button>
+                <span className="px-4 py-2 bg-white text-gray-800">{quantity}</span>
+                <button
+                  onClick={incrementQuantity}
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-r-lg transition-colors"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
             <div className="flex gap-2.5">
               <AddToBag
                 currency="USD"
                 price={data.price}
                 description={data.description}
-                productImage={data.productImage} // Pass the Sanity images array
+                productImage={data.productImage}
                 name={data.title}
                 key={`add-to-bag-${data._id}`}
-                price_id={data.price_id} id={data._id}                // id={data._id}
+                price_id={data.price_id}
+                id={data._id}
+                quantity={quantity} // Pass quantity to AddToBag
               />
               <CheckoutNow
                 currency="USD"
                 price={data.price}
                 description={data.description}
-                productImage={data.productImage} // Pass the first resolved image URL
+                productImage={data.productImage}
                 name={data.title}
                 key={`checkout-now-${data._id}`}
                 price_id={data.price_id}
                 id={data._id}
               />
-        </div>
-            <p className="mt-12 text-base text-gray-500 tracking-wide">{data.description
-            ? data.description.split(" ").slice(0, 50).join(" ") + "..."
-            : "No description available"}</p>
+            </div>
+
+            <p className="mt-12 text-base text-gray-500 tracking-wide">
+              {data.description
+                ? data.description.split(" ").slice(0, 50).join(" ") + "..."
+                : "No description available"}
+            </p>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
 function setError(arg0: string) {
   console.error(`Error: ${arg0}`);
   throw new Error("Function not implemented.");
 }
-
-

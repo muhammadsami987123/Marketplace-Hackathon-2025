@@ -12,6 +12,7 @@ export interface AddToBagProps {
     productImage: string;
     description: string;
     price_id: string;
+    
   
     /**
      * images can be either:
@@ -19,5 +20,6 @@ export interface AddToBagProps {
      * - an object with an .asset.url property
      */
     images?: (string | { asset: { url: string } })[];
+    quantity: number;
   }
   

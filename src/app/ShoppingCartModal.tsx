@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/sheet";
 import Image from "next/image";
 import { useShoppingCart } from "use-shopping-cart";
+import { Product } from "use-shopping-cart/core";
 
 export default function ShoppingCartModal() {
   const {
@@ -19,9 +20,10 @@ export default function ShoppingCartModal() {
     removeItem,
     totalPrice,
     redirectToCheckout,
+    addItem,
   } = useShoppingCart();
 
-  async function handleCheckoutClick(event: { preventDefault: () => void; }) {
+  async function handleCheckoutClick(event: { preventDefault: () => void }) {
     event.preventDefault();
     console.log("Button clicked"); // Verify click is working
     try {
@@ -35,16 +37,29 @@ export default function ShoppingCartModal() {
       console.error("Checkout Exception:", error); // Catch and log any exceptions
     }
   }
-  
+
+  // Function to increment quantity
+  const incrementQuantity = (entry:Product) => {
+    addItem(entry, { count: 1 }); // Add 1 to the current quantity
+  };
+
+  // Function to decrement quantity
+  const decrementQuantity = (entry:Product) => {
+    if (entry.quantity > 1) {
+      addItem(entry, { count: -1 }); // Subtract 1 from the current quantity
+    } else {
+      removeItem(entry.id); // Remove the item if quantity is 1
+    }
+  };
 
   return (
-    <Sheet  open={shouldDisplayCart} onOpenChange={() => handleCartClick()}  >
-      <SheetContent className="sm:max-w-lg w-[90vw] bg-[#f5f0e8] ">
+    <Sheet open={shouldDisplayCart} onOpenChange={() => handleCartClick()}>
+      <SheetContent className="sm:max-w-lg w-[90vw] bg-[#f5f0e8]">
         <SheetHeader>
           <SheetTitle>Shopping Cart</SheetTitle>
         </SheetHeader>
 
-        <div className=" h-full flex flex-col justify-between">
+        <div className="h-full flex flex-col justify-between">
           <div className="mt-8 flex-1 overflow-y-auto">
             <ul className="-my-6 divide-y divide-gray-200">
               {cartCount === 0 ? (
@@ -78,9 +93,23 @@ export default function ShoppingCartModal() {
                         </div>
 
                         <div className="flex flex-1 items-end justify-between text-sm">
-                          <p className="text-gray-500">
-                            QTY: {entry.quantity}
-                          </p>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => decrementQuantity(entry)}
+                              className="px-2 py-1 border border-gray-300 rounded-md hover:bg-gray-100"
+                            >
+                              -
+                            </button>
+                            <p className="text-gray-500">QTY: {entry.quantity}</p>
+                            <button
+                              type="button"
+                              onClick={() => incrementQuantity(entry)}
+                              className="px-2 py-1 border border-gray-300 rounded-md hover:bg-gray-100"
+                            >
+                              +
+                            </button>
+                          </div>
 
                           <div className="flex">
                             <button

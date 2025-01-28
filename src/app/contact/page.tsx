@@ -2,7 +2,7 @@
 
 import React from "react";
 import ContactForm from "@/app/ContactForm";
-import FeatureSection from "../FeatureSection";
+import FeatureSection from "@/app/FeatureSection";
 import Image from "next/image";
 
 const About = () => {

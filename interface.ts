@@ -8,6 +8,7 @@ slug: string;
 description: string;
 name: string;
 title:string,
+quantity: number;
 productImage: string
 
 }
