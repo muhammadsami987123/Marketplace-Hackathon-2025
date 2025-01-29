@@ -5,6 +5,13 @@ const nextConfig = {
   images: {
     domains: ['cdn.sanity.io'], // Add the domain here
   },
+  env: {
+    GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+  },
+  webpack: (config: { cache: boolean; }) => {
+    config.cache = false;
+    return config;
+  },
 };
 
 module.exports = nextConfig;

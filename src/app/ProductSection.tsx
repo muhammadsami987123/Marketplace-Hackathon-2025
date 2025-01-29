@@ -54,7 +54,7 @@ export default function ProductSection() {
         {products.slice(0, visibleProductsCount).map((product) => (
           <Link href={`/product/${product.slug}`} key={product._id}>
             <div
-              className="bg-gray-50 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+              className="bg-gray-50 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer border border-gray-300 flex flex-col h-full"
             >
               <Image
                 src={product.productImage || "/placeholder.jpg"} // Fallback to placeholder if image is missing
@@ -64,11 +64,11 @@ export default function ProductSection() {
                 height={240}
                 priority
               />
-              <h3 className="text-xl font-bold mb-2">{product.title}</h3>
-              <p className="text-gray-600 mb-2">{product.description
+              <h3 className="text-xl font-bold mb-2 text-gray-900 flex-grow">{product.title}</h3>
+              <p className="text-gray-600 mb-2 flex-grow">{product.description
                 ? product.description.split(" ").slice(0, 20).join(" ") + "..."
                 : "No description available"}</p>
-              <p className="text-lg font-bold mb-4">${product.price}</p>
+              <p className="text-lg font-bold mb-4 text-gray-800">${product.price}</p>
             </div>
           </Link>
         ))}

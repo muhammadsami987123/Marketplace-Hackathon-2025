@@ -81,7 +81,7 @@ const Navbar = () => {
   return (
     <div>
       {/* Desktop Navbar */}
-      <nav className="bg-white shadow-md sticky top-0 z-50 hidden md:block">
+      <nav className="bg-white shadow-md  top-0 z-50 hidden md:block">
         <div className="container mx-auto px-4 py-2 flex justify-between items-center">
           {/* Logo */}
           <Link href="/" className="flex items-center">

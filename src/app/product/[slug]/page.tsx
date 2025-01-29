@@ -7,6 +7,8 @@ import ImageGallery from "@/app/ImageGallery";
 import { Star, Truck } from "lucide-react";
 import AddToBag from "@/app/AddtoBag";
 import CheckoutNow from "@/app/cheatout";
+import Link from "next/link";
+import Image from "next/image";
 
 async function getData(slug: string): Promise<fullProduct | null> {
   const query = `*[_type == 'product' && slug.current == $slug][0] {
@@ -30,19 +32,42 @@ async function getData(slug: string): Promise<fullProduct | null> {
   }
 }
 
+async function getRelatedProducts(): Promise<fullProduct[]> {
+  const query = `*[_type == 'product'][0...8] {
+    _id,
+    "productImage": productImage.asset->url,
+    price,
+    title,
+     description,
+     price_id,
+    "slug": slug.current
+  }`;
+
+  try {
+    const data = await client.fetch(query);
+    return data || [];
+  } catch (error) {
+    console.error("Failed to fetch related products:", error);
+    return [];
+  }
+}
+
 export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
-  const resolvedParams = React.use(params); // Unwrap the params Promise
+  const resolvedParams = React.use(params);
   const slug = resolvedParams.slug;
 
   const [data, setData] = useState<fullProduct | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<fullProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [quantity, setQuantity] = useState(1); // State for quantity
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       const productData = await getData(slug);
       setData(productData);
+      const related = await getRelatedProducts();
+      setRelatedProducts(related);
       setIsLoading(false);
     };
 
@@ -67,7 +92,6 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
   const imageUrls = data.productImage ? [data.productImage] : ["/fallback.jpg"];
 
-  // Quantity increment and decrement functions
   const incrementQuantity = () => setQuantity((prev) => prev + 1);
   const decrementQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
@@ -98,7 +122,6 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
               <span className="text-sm">2-4 Day Shipping</span>
             </div>
 
-            {/* Quantity Selector */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
               <div className="flex items-center border border-gray-300 rounded-lg w-fit">
@@ -128,7 +151,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 key={`add-to-bag-${data._id}`}
                 price_id={data.price_id}
                 id={data._id}
-                quantity={quantity} // Pass quantity to AddToBag
+                quantity={quantity}
               />
               <CheckoutNow
                 currency="USD"
@@ -149,6 +172,34 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
             </p>
           </div>
         </div>
+
+        {/* Related Products Section */}
+               {/* Related Products Section */}
+               <div className="bg-[#f5f0e8] py-8 px-4 rounded-lg">
+          <h3 className="text-xl font-bold text-gray-800 mb-6 text-center">Related Products</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {relatedProducts.map((product) => (
+              <Link key={product._id} href={`/product/${product.slug}`}>
+                <div className="bg-white p-4 rounded-md shadow-sm hover:shadow-md transition-all">
+                  <div className="relative w-full h-48 mb-4">
+                    <Image
+                      src={product.productImage}
+                      alt={product.title}
+                      fill
+                      className="object-cover rounded-md"
+                    />
+                  </div>
+                  <h4 className="text-lg font-semibold mb-2">{product.title}</h4>
+                  <p className="text-gray-600 text-sm line-clamp-2 mb-2">
+                    {product.description ? product.description.split(" ").slice(0, 20).join(" ") + "..." : "No description available"}
+                  </p>
+                  <p className="text-base font-bold">${product.price}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
       </div>
     </div>
   );
