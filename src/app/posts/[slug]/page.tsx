@@ -45,7 +45,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
   }
 
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4">
+    <div className=" bg-[#f5f0e8] max-w-4xl mx-auto py-8 px-4">
       <h1 className="text-4xl font-bold">{post.title}</h1>
       <div className="flex items-center gap-4 text-gray-500 text-sm mt-2">
         <span>{post.author}</span>

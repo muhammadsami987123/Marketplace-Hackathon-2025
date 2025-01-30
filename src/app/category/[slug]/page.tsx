@@ -64,7 +64,7 @@ export default function CategoryPage() {
   return (
     <>
       {/* Hero Section */}
-      <div className="relative h-[280px] w-full">
+      <div className="bg-[#f5f0e8] relative h-[280px] w-full">
         <Image src="/blogs.jpg" alt="Category Background" fill className="object-cover" priority />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-black">
           <h1 className="text-4xl font-semibold capitalize">{slug ? slug.replace("-", " ") : "Category"}</h1>

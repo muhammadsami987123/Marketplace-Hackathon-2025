@@ -96,7 +96,7 @@ function ClientPagination() {
   }));
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr,350px] gap-8">
+    <div className=" grid grid-cols-1 lg:grid-cols-[1fr,350px] gap-8">
       <div>
         {loading ? (
           <p className="text-center text-xl font-semibold">Loading...</p>

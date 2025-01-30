@@ -2,7 +2,7 @@ import React from 'react';
 
 const PaymentOptions = () => {
   return (
-    <div className="bg-gray-50 text-gray-800 min-h-screen">
+    <div className="bg-[#f5f0e8] text-gray-800 min-h-screen">
       <div className="container mx-auto py-10 px-5 max-w-4xl">
         <h1 className="text-5xl font-bold mb-8 text-center text-gray-900">
           Payment Options
