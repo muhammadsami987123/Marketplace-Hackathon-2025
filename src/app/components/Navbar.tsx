@@ -226,12 +226,12 @@ const Navbar = () => {
       </nav>
 
       {/* Side Slider Menu (Mobile) */}
-      <div
+      <div 
         className={`fixed inset-0 bg-black bg-opacity-50 z-50 transition-opacity ${
-          isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
+          isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible" 
         }`}
         onClick={toggleMenu}
-      >
+      > 
         <div
           className={`fixed left-0 top-0 h-full w-64 bg-white shadow-lg transform transition-transform ${
             isMenuOpen ? "translate-x-0" : "-translate-x-full"
@@ -309,6 +309,9 @@ const Navbar = () => {
               </Link>
               <Link href="/shop" className="text-left hover:text-blue-500">
                 Shop
+              </Link>
+              <Link href="/blog" className="text-left hover:text-blue-500">
+                Blog
               </Link>
               <Link href="/contact" className="text-left hover:text-blue-500">
                 Contact
