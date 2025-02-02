@@ -49,6 +49,7 @@ function ProductSection() {
         description,
         price,
         "productImage": productImage.asset->url,
+        
       }`;
 
       try {

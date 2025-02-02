@@ -7,6 +7,7 @@ import { IoIosSearch, IoIosMenu } from "react-icons/io";
 import { MdOutlinePeople } from "react-icons/md";
 import { CiHeart } from "react-icons/ci";
 import { HiOutlineShoppingCart } from "react-icons/hi";
+import { FaUser } from "react-icons/fa"; // Import the user icon
 import { useRouter } from "next/navigation";
 import { client } from "@/sanity/lib/client";
 import { useShoppingCart } from "use-shopping-cart";
@@ -192,12 +193,13 @@ const Navbar = () => {
               onClick={handleCartClick}
             />
 
-            {/* Login/Signup Buttons */}
+            {/* Login/Signup Button with Icon */}
             <Link
               href="/login"
-              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+              className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
             >
-              Login/Signup
+              <FaUser className="mr-2" />
+              <span>Login/Signup</span>
             </Link>
           </div>
         </div>
@@ -328,19 +330,21 @@ const Navbar = () => {
               <MdOutlinePeople className="text-2xl text-gray-600 hover:text-red-500 cursor-pointer" />
             </div>
 
-            {/* Login/Signup Buttons */}
+            {/* Login/Signup Buttons with Icons */}
             <div className="mt-6">
               <button
                 onClick={() => handleAuthClick("/login")}
-                className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition mb-2"
+                className="w-full flex items-center justify-center bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition mb-2"
               >
-                Login
+                <FaUser className="mr-2" />
+                <span>Login</span>
               </button>
               <button
                 onClick={() => handleAuthClick("/login")}
-                className="w-full bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition"
+                className="w-full flex items-center justify-center bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition"
               >
-                Sign Up
+                <FaUser className="mr-2" />
+                <span>Sign Up</span>
               </button>
             </div>
           </div>
