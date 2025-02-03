@@ -87,7 +87,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <Image
-              src="/logo.jpg"
+              src="/logo.ico"
               alt="Furniro Logo"
               width={40}
               height={40}
@@ -331,20 +331,18 @@ const Navbar = () => {
             </div>
 
             {/* Login/Signup Buttons with Icons */}
-            <div className="mt-6">
-              <button
+            <div  className="mt-6">
+              <button 
                 onClick={() => handleAuthClick("/login")}
-                className="w-full flex items-center justify-center bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition mb-2"
+                className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition mb-2"
               >
-                <FaUser className="mr-2" />
-                <span>Login</span>
+                Login
               </button>
               <button
-                onClick={() => handleAuthClick("/login")}
-                className="w-full flex items-center justify-center bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition"
+                onClick={() => handleAuthClick("/signup")}
+                className="w-full bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition"
               >
-                <FaUser className="mr-2" />
-                <span>Sign Up</span>
+                Sign Up
               </button>
             </div>
           </div>
@@ -353,5 +351,6 @@ const Navbar = () => {
     </div>
   );
 };
+<FaUser className="mr-2" />
 
 export default Navbar;

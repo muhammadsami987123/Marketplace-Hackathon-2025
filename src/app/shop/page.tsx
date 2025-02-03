@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { sanityClient } from "@/sanity/lib/sanity";
 import FilterInterface from "../filter";
+import { ChevronRight } from "lucide-react";
 
 interface Product {
   id: string;
@@ -131,13 +132,22 @@ function ProductSection() {
         {/* Hero Banner */}
         <header
           className="relative h-48 md:h-64 w-full bg-center bg-cover rounded-md overflow-hidden mb-6"
-          style={{ backgroundImage: "url('/shop.jpg')" }}
+          style={{ backgroundImage: "url('/background.jpg')" }}
         >
           {/* Optional overlay and heading */}
           {/* <div className="absolute inset-0 bg-black bg-opacity-30" />
           <div className="relative h-full flex items-center justify-center">
             <h1 className="text-white font-bold text-2xl md:text-4xl">Our Shop</h1>
           </div> */}
+           <div className="absolute inset-0 flex flex-col items-center justify-center">
+           <Image src="/logo.ico" alt="logo" width={40} height={40} />
+          <h1 className="text-5xl font-semibold mb-4">Shop</h1>
+          <div className="flex items-center gap-2 text-sm">
+            <Link href="/" className="hover:underline">Home</Link>
+            <ChevronRight className="w-4 h-4" />
+            <span>Shop</span>
+          </div>
+        </div>
         </header>
 
         {/* Filter Bar */}

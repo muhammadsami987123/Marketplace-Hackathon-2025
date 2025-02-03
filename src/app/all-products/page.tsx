@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { sanityClient } from "@/sanity/lib/sanity";
 import FilterInterface from "../filter";
+import { ChevronRight } from "lucide-react";
 
 interface Product {
   id: string;
@@ -112,16 +113,38 @@ export default function ProductSection() {
 
   // Pagination
   // const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedProducts = filteredProducts.slice(
     startIndex,
     startIndex + itemsPerPage
   );
+  
 
   return (
     <section className="min-h-screen bg-gray-100">
       <div className="container mx-auto px-4 py-6">
-        <h2 className="text-3xl font-bold mb-6 flex justify-center ">Our Products</h2>
+      <header
+          className="relative h-48 md:h-64 w-full bg-center bg-cover rounded-md overflow-hidden mb-6"
+          style={{ backgroundImage: "url('/background.jpg')" }}
+        >
+          {/* Optional overlay and heading */}
+          {/* <div className="absolute inset-0 bg-black bg-opacity-30" />
+          <div className="relative h-full flex items-center justify-center">
+            <h1 className="text-white font-bold text-2xl md:text-4xl">Our Shop</h1>
+          </div> */}
+           <div className="absolute inset-0 flex flex-col items-center justify-center">
+           <Image src="/logo.ico" alt="logo" width={40} height={40} />
+          <h1 className="text-5xl font-semibold mb-4">All Products</h1>
+          <div className="flex items-center gap-2 text-sm">
+            <Link href="/" className="hover:underline">Home</Link>
+            <ChevronRight className="w-4 h-4" />
+            <span>All Products</span>
+          </div>
+        </div>
+        </header>
+        {/* <h2 className="text-3xl font-bold mb-6 flex justify-center ">Our Products</h2> */}
         <FilterInterface
           totalResults={filteredProducts.length}
           itemsPerPage={itemsPerPage}
@@ -130,24 +153,61 @@ export default function ProductSection() {
           onSortOptionChange={(value) => setSortOption(value)}
           onFilterClick={() => setShowFilters(!showFilters)}
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {paginatedProducts.map((product) => (
-            <Link key={product.id} href={`/product/${product.slug}`}>
-              <div className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-all cursor-pointer">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  width={500}
-                  height={500}
-                  className="w-full h-60 object-cover mb-4 rounded-lg"
-                />
-                <h3 className="text-xl font-bold mb-2">{product.name}</h3>
-                <p className="text-gray-600 mb-2">{product.description}</p>
-                <p className="text-lg font-bold">${product.price}</p>
+            <Link href={`/product/${product.slug}`} key={product.id}>
+              <div className="bg-white p-4 rounded-md shadow-sm hover:shadow-md transition-all">
+                <div className="relative w-full h-48 mb-4">
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    fill
+                    className="object-cover rounded-md"
+                  />
+                </div>
+                <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
+                <p className="text-gray-600 text-sm line-clamp-2 mb-2">
+                  {product.description}
+                </p>
+                <p className="text-base font-bold">${product.price}</p>
               </div>
             </Link>
           ))}
         </div>
+         {/* Numbered Pagination */}
+         {totalPages > 1 && (
+          <div className="flex items-center gap-2 mt-8 justify-center">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+              const isActive = page === currentPage;
+              return (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`px-4 py-2 rounded-md transition-colors 
+                    ${
+                      isActive
+                        ? "bg-[#97733f] text-white" // Active page
+                        : "bg-[#F6EDE5] hover:bg-[#f2e6dc] text-black" // Inactive page
+                    }
+                  `}
+                >
+                  {page}
+                </button>
+              );
+            })}
+
+            {/* Next Button */}
+            {currentPage < totalPages && (
+              <button
+                onClick={() => setCurrentPage((prev) => prev + 1)}
+                className="px-4 py-2 rounded-md transition-colors bg-[#F6EDE5] hover:bg-[#f2e6dc] text-black"
+              >
+                Next
+              </button>
+            )}
+          </div>
+        )}
+      
       </div>
     </section>
   );

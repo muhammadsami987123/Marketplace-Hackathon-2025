@@ -10,7 +10,7 @@ type Message = {
   sender: "user" | "bot";
 };
 
-const Chat = () => {
+export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([
     { text: "👋 Hello! I'm your shopping assistant. How can I help you today?", sender: "bot" },
   ]);
@@ -26,17 +26,20 @@ const Chat = () => {
   const sendMessage = async () => {
     if (!input.trim()) return;
 
+    // User message
     const userMessage: Message = { text: input, sender: "user" };
-    setMessages((prevMessages) => [...prevMessages, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
 
     try {
+      // Post to your /api/chat endpoint
       const response = await axios.post("/api/chat", { message: input });
+      // Bot message
       const botMessage: Message = { text: response.data.reply, sender: "bot" };
-      setMessages((prevMessages) => [...prevMessages, botMessage]);
+      setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
       console.error("Error sending message:", error);
-      setMessages((prevMessages) => [
-        ...prevMessages,
+      setMessages((prev) => [
+        ...prev,
         { text: "⚠️ Sorry, I couldn't fetch a response.", sender: "bot" },
       ]);
     }
@@ -44,12 +47,13 @@ const Chat = () => {
     setInput("");
   };
 
-  // Check if the device is mobile
+  // Detect mobile screen (simple check)
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
+  // Open the chatbox or redirect on mobile
   const handleChatOpen = () => {
     if (isMobile) {
-      router.push("/chat"); // Redirect to a new chat page for mobile users
+      router.push("/chat"); // Adjust path if you have a dedicated mobile page
     } else {
       setIsOpen(!isOpen);
     }
@@ -60,15 +64,17 @@ const Chat = () => {
       {/* Floating Chat Button */}
       <button
         onClick={handleChatOpen}
-        className="fixed bottom-6 right-6 md:bottom-8 md:right-8 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-all duration-300 ease-in-out"
+        // z-[9999] ensures the button stays on top of all other elements
+        className="fixed bottom-6 right-6 md:bottom-8 md:right-8 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-all duration-300 ease-in-out z-[9999]"
       >
         {isOpen ? <FaTimes size={24} /> : <FaComments size={24} />}
       </button>
 
-      {/* Chat Box - Only for PC */}
+      {/* Chat Box (visible on non-mobile screens) */}
       {!isMobile && isOpen && (
         <div
-          className="fixed bottom-20 right-4 md:right-10 w-[95%] max-w-[400px] h-[80vh] md:h-[500px] bg-white shadow-xl rounded-lg border overflow-hidden flex flex-col transition-all duration-300 ease-in-out"
+          // Add a high z-index to keep the chat on top
+          className="fixed bottom-20 right-4 md:right-10 w-[95%] max-w-[400px] h-[80vh] md:h-[500px] bg-white shadow-xl rounded-lg border overflow-hidden flex flex-col transition-all duration-300 ease-in-out z-[9999]"
         >
           {/* Header */}
           <div className="bg-blue-500 text-white p-4 font-semibold flex justify-between items-center">
@@ -119,8 +125,8 @@ const Chat = () => {
               aria-label="Type your message"
             />
             <button
-              className="bg-blue-500 text-white px-4 rounded-r-lg flex items-center justify-center hover:bg-blue-600 transition-all"
               onClick={sendMessage}
+              className="bg-blue-500 text-white px-4 rounded-r-lg flex items-center justify-center hover:bg-blue-600 transition-all"
               aria-label="Send message"
             >
               <FaPaperPlane size={18} />
@@ -130,6 +136,4 @@ const Chat = () => {
       )}
     </>
   );
-};
-
-export default Chat;
+}

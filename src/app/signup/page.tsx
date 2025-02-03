@@ -4,17 +4,19 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
-import { PlayIcon as Sport, Facebook } from "lucide-react"
 // import { signIn } from "next-auth/react"
 import { MdOutlineLogin } from "react-icons/md"
+import Image from "next/image"
 import { FcGoogle } from "react-icons/fc"
+import { Facebook } from "lucide-react"
 
 export default function SignupPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8">
         <div className="flex items-center justify-center mb-6">
-          <Sport className="w-10 h-10 text-blue-600" />
+        <Image src="/logo.ico" alt="logo" width={40} height={40} />
+          {/* <Sport className="w-10 h-10 text-blue-600" /> */}
           <h2 className="text-3xl font-bold text-gray-800 ml-2">Create an Account</h2>
         </div>
         <form className="space-y-6">

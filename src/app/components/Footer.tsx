@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { FaFacebookF,  FaInstagram, FaLinkedinIn } from "react-icons/fa";
+import Image from 'next/image';
 // import { SiVercel } from "react-icons/si";
 
 const Footer = () => {
@@ -10,7 +11,10 @@ const Footer = () => {
           
           {/* Brand & Address */}
           <div>
-            <h1 className="text-3xl font-bold text-yellow-500">Funiro.</h1>
+            <div className='flex items-center gap-2'>
+            <Image src="/logo.ico" alt="logo" width={40} height={40} />
+            <h1 className="text-3xl font-bold text-yellow-500">Funiro</h1>
+            </div>
             <p className="text-gray-400 mt-4">
               400 University Drive Suite 200<br />
               Coral Gables, FL 33134 USA

@@ -28,14 +28,26 @@ export default function BlogPage() {
     <>
       {/* Hero Section */}
       <div className="relative h-[280px] w-full">
-        <Image src="/blogs.jpg" alt="Blog background" fill className="object-cover" priority />
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <h1 className="text-4xl font-semibold mb-4">Blog</h1>
+        <div className="container mx-auto px-4 py-8">
+      <header
+          className="relative h-48 md:h-64 w-full bg-center bg-cover rounded-md overflow-hidden mb-6"
+          style={{ backgroundImage: "url('/background.jpg')" }}
+        >
+          {/* Optional overlay and heading */}
+          {/* <div className="absolute inset-0 bg-black bg-opacity-30" />
+          <div className="relative h-full flex items-center justify-center">
+            <h1 className="text-white font-bold text-2xl md:text-4xl">Our Shop</h1>
+          </div> */}
+           <div className="absolute inset-0 flex flex-col items-center justify-center">
+           <Image src="/logo.ico" alt="logo" width={40} height={40} />
+          <h1 className="text-5xl font-semibold mb-4">Blog</h1>
           <div className="flex items-center gap-2 text-sm">
             <Link href="/" className="hover:underline">Home</Link>
             <ChevronRight className="w-4 h-4" />
             <span>Blog</span>
           </div>
+        </div>
+        </header>
         </div>
       </div>
 
