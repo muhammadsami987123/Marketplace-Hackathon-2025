@@ -40,7 +40,7 @@ export default function BlogPage() {
           </div> */}
            <div className="absolute inset-0 flex flex-col items-center justify-center">
            <Image src="/logo.ico" alt="logo" width={40} height={40} />
-          <h1 className="text-5xl font-semibold mb-4">Blog</h1>
+          <h1 className="lg:text-3xl font-semibold sm:text-2xl  mb-4">Blog</h1>
           <div className="flex items-center gap-2 text-sm">
             <Link href="/" className="hover:underline">Home</Link>
             <ChevronRight className="w-4 h-4" />
@@ -153,7 +153,7 @@ function ClientPagination() {
           <div className="space-y-3">
             {categories.map((category) => (
               <div key={category.name} className="flex justify-between items-center">
-                <Link href={`/category/${category.name}`} className="text-lightGray hover:text-gray-900">
+                <Link href={`/Blogcategory/${category.name}`} className="text-lightGray hover:text-gray-900">
                   {category.name}
                 </Link>
                 <span className="text-lightGray">{category.count}</span>

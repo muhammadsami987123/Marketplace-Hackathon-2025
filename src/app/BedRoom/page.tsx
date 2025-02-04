@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import FeatureSection from "../FeatureSection";
 import Link from "next/link";
 import Image from "next/image";
 import { sanityClient } from "@/sanity/lib/sanity";
@@ -25,13 +26,13 @@ interface SanityProduct {
   productImage: string | null;
 }
 
-export default function ProductSection() {
+function ProductSection() {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
   // Filtering + Sorting
-  const [priceRange] = useState<number>(500);
-  const [category] = useState<string>("all");
+  const [priceRange, setPriceRange] = useState<number>(500);
+  const [category, setCategory] = useState<string>("all");
   const [showFilters, setShowFilters] = useState<boolean>(false);
 
   // Pagination + Sorting
@@ -42,13 +43,14 @@ export default function ProductSection() {
   // Fetch products from Sanity
   useEffect(() => {
     const fetchProducts = async () => {
-      const query = `*[_type == "product"] {
+      const query = `*[_type == "Bedroom"] {
         _id,
         title,
         "slug": slug.current,
         description,
         price,
         "productImage": productImage.asset->url,
+        
       }`;
 
       try {
@@ -78,6 +80,7 @@ export default function ProductSection() {
    */
   const applyFiltersAndSorting = useCallback(
     (items: Product[]) => {
+      // Use 'const' because we're not reassigning the reference
       const result = items.filter(
         (product) =>
           product.price <= priceRange &&
@@ -85,6 +88,7 @@ export default function ProductSection() {
             product.name.toLowerCase().includes(category.toLowerCase()))
       );
 
+      // Sorting
       switch (sortOption) {
         case "name-asc":
           result.sort((a, b) => a.name.localeCompare(b.name));
@@ -98,6 +102,7 @@ export default function ProductSection() {
         case "price-desc":
           result.sort((a, b) => b.price - a.price);
           break;
+        // "default" => no sort
       }
 
       return result;
@@ -105,27 +110,27 @@ export default function ProductSection() {
     [priceRange, category, sortOption]
   );
 
+  // Whenever products, priceRange, category, or sortOption changes, re-apply
   useEffect(() => {
     const newFiltered = applyFiltersAndSorting(products);
     setFilteredProducts(newFiltered);
-    setCurrentPage(1);
+    setCurrentPage(1); // reset page when filters change
   }, [products, applyFiltersAndSorting]);
 
   // Pagination
-  // const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedProducts = filteredProducts.slice(
     startIndex,
     startIndex + itemsPerPage
   );
-  
 
   return (
-    <section className="min-h-screen bg-gray-100">
-      <div className="container mx-auto px-4 py-6">
-      <header
+    <div className="min-h-screen bg-[#f5f0e8]">
+      {/* Container */}
+      <div className="container mx-auto px-4 py-8">
+        {/* Hero Banner */}
+        <header
           className="relative h-48 md:h-64 w-full bg-center bg-cover rounded-md overflow-hidden mb-6"
           style={{ backgroundImage: "url('/background.jpg')" }}
         >
@@ -136,15 +141,16 @@ export default function ProductSection() {
           </div> */}
            <div className="absolute inset-0 flex flex-col items-center justify-center">
            <Image src="/logo.ico" alt="logo" width={40} height={40} />
-          <h1 className="lg:text-3xl font-semibold sm:text-2xl  mb-4">All Products</h1>
+          <h1 className="lg:text-3xl font-semibold sm:text-2xl  mb-4">BedRooms Furniture</h1>
           <div className="flex items-center gap-2 text-sm">
             <Link href="/" className="hover:underline">Home</Link>
             <ChevronRight className="w-4 h-4" />
-            <span>All Products</span>
+            <span>bedRoom</span>
           </div>
         </div>
         </header>
-        {/* <h2 className="text-3xl font-bold mb-6 flex justify-center ">Our Products</h2> */}
+
+        {/* Filter Bar */}
         <FilterInterface
           totalResults={filteredProducts.length}
           itemsPerPage={itemsPerPage}
@@ -153,9 +159,51 @@ export default function ProductSection() {
           onSortOptionChange={(value) => setSortOption(value)}
           onFilterClick={() => setShowFilters(!showFilters)}
         />
+
+        {/* Additional Filters (if toggled) */}
+        {showFilters && (
+          <div className="mt-4 mb-6 p-4 bg-white rounded-md shadow-sm">
+            <div className="flex flex-col md:flex-row gap-4 md:items-center">
+              <div className="flex flex-col">
+                <label htmlFor="priceRange" className="text-sm font-medium">
+                  Max Price: {priceRange}
+                </label>
+                <input
+                  id="priceRange"
+                  type="range"
+                  min="0"
+                  max="2000"
+                  value={priceRange}
+                  onChange={(e) => setPriceRange(Number(e.target.value))}
+                  className="mt-2"
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label htmlFor="category" className="text-sm font-medium">
+                  Category
+                </label>
+                <select
+                  id="category"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="border border-gray-300 rounded px-2 py-1 mt-2"
+                >
+                  <option value="all">All</option>
+                  <option value="shoes">Shoes</option>
+                  <option value="bag">Bag</option>
+                  <option value="dress">Dress</option>
+                  {/* Add more categories as needed */}
+                </select>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Products Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {paginatedProducts.map((product) => (
-            <Link href={`/product/${product.slug}`} key={product.id}>
+            <Link href={`/BedRoomProduct/${product.slug}`} key={product.id}>
               <div className="bg-white p-4 rounded-md shadow-sm hover:shadow-md transition-all">
                 <div className="relative w-full h-48 mb-4">
                   <Image
@@ -174,8 +222,9 @@ export default function ProductSection() {
             </Link>
           ))}
         </div>
-         {/* Numbered Pagination */}
-         {totalPages > 1 && (
+
+        {/* Numbered Pagination */}
+        {totalPages > 1 && (
           <div className="flex items-center gap-2 mt-8 justify-center">
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
               const isActive = page === currentPage;
@@ -207,8 +256,12 @@ export default function ProductSection() {
             )}
           </div>
         )}
-      
       </div>
-    </section>
+
+      {/* Feature Section */}
+      <FeatureSection />
+    </div>
   );
 }
+
+export default ProductSection;

@@ -24,7 +24,7 @@ const About = () => {
           </div> */}
            <div className="absolute inset-0 flex flex-col items-center justify-center">
            <Image src="/logo.ico" alt="logo" width={40} height={40} />
-          <h1 className="text-5xl font-semibold mb-4">Contact</h1>
+          <h1 className="lg:text-3xl font-semibold sm:text-2xl  mb-4">Contact</h1>
           <div className="flex items-center gap-2 text-sm">
             <Link href="/" className="hover:underline">Home</Link>
             <ChevronRight className="w-4 h-4" />
