@@ -1,4 +1,5 @@
 export interface fullProduct {
+stripeProductId: string;
 price_id: any;
 _id: string;
 images: any;

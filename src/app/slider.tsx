@@ -93,7 +93,7 @@ const Slider = () => {
         </div>
 
         {/* Dots Navigation */}
-        <div className="flex justify-center mt-6 space-x-2">
+        <div className="flex justify-center  mt-6 space-x-2">
           {slides.map((_, index) => (
             <span
               key={index}

@@ -150,7 +150,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 name={data.title}
                 key={`add-to-bag-${data._id}`}
                 price_id={data.price_id}
-                id={data._id}
+                _id={data._id}
                 quantity={quantity}
               />
               <CheckoutNow

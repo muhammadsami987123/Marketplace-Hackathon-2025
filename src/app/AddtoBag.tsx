@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useShoppingCart } from "use-shopping-cart";
 
 export default function AddToBag(props: {
-  id: string;
+  _id: string;
   name: string;
   price: number;
   currency: string;
@@ -14,7 +14,7 @@ export default function AddToBag(props: {
   quantity: number; // Ensure quantity is included in props
 }) {
   const {
-    id,
+    _id,
     name,
     price,
     currency,
@@ -27,7 +27,7 @@ export default function AddToBag(props: {
   const { addItem, handleCartClick } = useShoppingCart();
 
   const product = {
-    id,
+    _id,
     name,
     price,
     currency,
