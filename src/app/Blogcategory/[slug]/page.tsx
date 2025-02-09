@@ -64,9 +64,14 @@ export default function CategoryPage() {
   return (
     <>
       {/* Hero Section */}
-      <div className="bg-[#f5f0e8] relative h-[280px] w-full">
-        <Image src="/blogs.jpg" alt="Category Background" fill className="object-cover" priority />
+      <div className="bg-[#f5f0e8]">
+      <div className="  relative h-[280px] w-full container mx-auto px-4 py-8">
+        <header
+          className="relative h-48 md:h-64 w-full bg-center bg-cover rounded-md overflow-hidden mb-6"
+          style={{ backgroundImage: "url('/background.jpg')" }}
+        >
         <div className="absolute inset-0 flex flex-col items-center justify-center text-black">
+           <Image src="/logo.ico" alt="logo" width={40} height={40} />
           <h1 className="text-4xl font-semibold capitalize">{slug ? slug.replace("-", " ") : "Category"}</h1>
           <div className="flex items-center gap-2 text-sm">
             <Link href="/" className="hover:underline">Home</Link>
@@ -74,6 +79,7 @@ export default function CategoryPage() {
             <span className="capitalize">{slug ? slug.replace("-", " ") : "Category"}</span>
           </div>
         </div>
+        </header>
       </div>
 
       {/* Category Posts */}
@@ -147,6 +153,8 @@ export default function CategoryPage() {
 
       {/* Features Section */}
       <FeatureSection />
+      </div>
     </>
+    
   );
 }

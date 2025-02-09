@@ -114,9 +114,9 @@ export default function ModernFurniture() {
                 />
               )}
               {/* Sale Badge */}
-              <div className="absolute top-4 right-4 bg-black text-white px-4 py-2 rounded-sm">
+              <div className="absolute top-0 right-4 bg-black text-white px-4 py-2 rounded-sm">
                 <span className="text-xl font-bold">
-                  {heroBanner.discount || "50%"}
+                  {heroBanner.discount || "40%"}
                 </span>
                 <span className="block text-sm">OFF</span>
               </div>

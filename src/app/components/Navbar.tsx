@@ -67,6 +67,9 @@ const Navbar = () => {
     setResults([]);
     router.push(`/product/${slug}`);
   };
+  const handleWishlistClick = () => {
+    router.push(`/wishlist`);
+  };
 
   // Handle menu toggle
   const toggleMenu = () => {
@@ -187,7 +190,10 @@ const Navbar = () => {
 
             {/* Icons */}
             <MdOutlinePeople className="text-2xl text-gray-600 hover:text-red-500 cursor-pointer" />
-            <CiHeart className="text-2xl text-gray-600 hover:text-red-500 cursor-pointer" />
+            <CiHeart
+              className="text-2xl text-gray-600 hover:text-red-500 cursor-pointer"
+              onClick={handleWishlistClick}
+            />
             <HiOutlineShoppingCart
               className="text-2xl text-gray-600 hover:text-red-500 cursor-pointer"
               onClick={handleCartClick}
@@ -326,7 +332,9 @@ const Navbar = () => {
                 className="text-2xl text-gray-600 hover:text-red-500 cursor-pointer"
                 onClick={handleCartClick}
               />
-              <CiHeart className="text-2xl text-gray-600 hover:text-red-500 cursor-pointer" />
+              <CiHeart className="text-2xl text-gray-600 hover:text-red-500 cursor-pointer"
+               onClick={handleWishlistClick}
+              />
               <MdOutlinePeople className="text-2xl text-gray-600 hover:text-red-500 cursor-pointer" />
             </div>
 

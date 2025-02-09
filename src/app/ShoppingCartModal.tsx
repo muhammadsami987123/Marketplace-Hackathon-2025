@@ -8,10 +8,13 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import Image from "next/image";
+import { useRouter } from "next/navigation"; // Use "next/navigation" instead of "next/router"
 import { useShoppingCart } from "use-shopping-cart";
 import { Product } from "use-shopping-cart/core";
 
 export default function ShoppingCartModal() {
+  const router = useRouter(); // Move useRouter inside the component
+
   const {
     cartCount,
     shouldDisplayCart,
@@ -19,32 +22,25 @@ export default function ShoppingCartModal() {
     cartDetails,
     removeItem,
     totalPrice,
-    redirectToCheckout,
+    
     addItem,
   } = useShoppingCart();
 
-  async function handleCheckoutClick(event: { preventDefault: () => void }) {
-    event.preventDefault();
-    console.log("Button clicked"); // Verify click is working
+  const handleCheckout = () => {
     try {
-      console.log("Redirect to Checkout triggered");
-      const result = await redirectToCheckout();
-      console.log("Redirect to Checkout Result:", result); // Log result
-      if (result?.error) {
-        console.error("Checkout Error:", result.error); // Log errors
-      }
+      router.push("/orderDetails"); // Correct usage of router.push
     } catch (error) {
-      console.error("Checkout Exception:", error); // Catch and log any exceptions
+      console.error("Failed to redirect to /checkout:", error);
     }
-  }
+  };
 
   // Function to increment quantity
-  const incrementQuantity = (entry:Product) => {
+  const incrementQuantity = (entry: Product) => {
     addItem(entry, { count: 1 }); // Add 1 to the current quantity
   };
 
   // Function to decrement quantity
-  const decrementQuantity = (entry:Product) => {
+  const decrementQuantity = (entry: Product) => {
     if (entry.quantity > 1) {
       addItem(entry, { count: -1 }); // Subtract 1 from the current quantity
     } else {
@@ -139,7 +135,7 @@ export default function ShoppingCartModal() {
             </p>
 
             <div className="mt-6">
-              <Button onClick={handleCheckoutClick} className="w-full">
+              <Button onClick={handleCheckout} className="w-full">
                 Checkout
               </Button>
             </div>

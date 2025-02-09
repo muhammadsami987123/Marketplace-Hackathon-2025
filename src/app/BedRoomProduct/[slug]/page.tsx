@@ -6,10 +6,9 @@ import { fullProduct } from "../../../../interface";
 import ImageGallery from "@/app/ImageGallery";
 import { Star, Truck } from "lucide-react";
 import AddToBag from "@/app/AddtoBag";
-import CheckoutNow from "@/app/cheatout";
 import Link from "next/link";
 import Image from "next/image";
-
+import AddToWishlist from "@/app/wishlistcomponent/wishlistbutton";
 async function getData(slug: string): Promise<fullProduct | null> {
   const query = `*[_type == 'Bedroom' && slug.current == $slug][0] {
     _id,
@@ -153,16 +152,18 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 _id={data._id}
                 quantity={quantity}
               />
-              <CheckoutNow
-                currency="USD"
-                price={data.price}
-                description={data.description}
-                productImage={data.productImage}
-                name={data.title}
-                key={`checkout-now-${data._id}`}
-                price_id={data.price_id}
-                id={data._id}
-              />
+               <AddToWishlist 
+                                             currency="USD"
+                                             price={data.price}
+                                             description={data.description}
+                                             productImage={data.productImage}
+                                             name={data.title}
+                                             key={`wishlist-button-${data._id}`}
+                                             price_id={data.price_id}
+                                             _id={data._id}
+                                             quantity={quantity}
+                                           />
+              
             </div>
 
             <p className="mt-12 text-base text-gray-500 tracking-wide">

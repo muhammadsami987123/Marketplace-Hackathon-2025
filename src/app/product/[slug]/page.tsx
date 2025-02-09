@@ -6,9 +6,10 @@ import { fullProduct } from "../../../../interface";
 import ImageGallery from "@/app/ImageGallery";
 import { Star, Truck } from "lucide-react";
 import AddToBag from "@/app/AddtoBag";
-import CheckoutNow from "@/app/cheatout";
 import Link from "next/link";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import AddToWishlist from "@/app/wishlistcomponent/wishlistbutton";
 
 async function getData(slug: string): Promise<fullProduct | null> {
   const query = `*[_type == 'product' && slug.current == $slug][0] {
@@ -101,27 +102,43 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           <ImageGallery images={imageUrls} />
           <div className="md:py-8">
-            <h2 className="text-2xl font-bold text-gray-800 lg:text-3xl">{data.title}</h2>
-            <div className="mb-6 flex items-center md:mb-10 py-4">
-              <button className="rounded-full bg-blue-600 flex items-center gap-2 py-1 px-3">
-                <span className="text-sm text-white">4.2</span>
-                <Star className="h-6 w-6 text-white" />
-              </button>
-              <span className="text-sm text-gray-600 font-medium px-2">56 Ratings</span>
+            <div className="mb-2 md:mb-3">
+              
+              <h2 className="text-2xl font-bold text-gray-800 lg:text-3xl">
+                {data.title}
+              </h2>
             </div>
+
+            <div className="mb-6 flex items-center gap-3 md:mb-10">
+              <Button className="rounded-full gap-x-2">
+                <span className="text-sm">4.2</span>
+                <Star className="h-5 w-5" />
+              </Button>
+
+              <span className="text-sm text-gray-500 transition duration-100">
+                56 Ratings
+              </span>
+            </div>
+
             <div className="mb-4">
               <div className="flex items-end gap-2">
-                <span className="text-xl font-bold text-gray-800 md:text-2xl">${data.price}</span>
-                <span className="mb-0.5 text-red-500 line-through">${data.price + 30}</span>
+                <span className="text-xl font-bold text-gray-800 md:text-2xl">
+                  ${data.price}
+                </span>
+                <span className="mb-0.5 text-red-500 line-through">
+                  ${data.price + 30}
+                </span>
               </div>
-              <span className="text-sm text-gray-500">Incl. VAT plus shipping</span>
+
+              <span className="text-sm text-gray-500">
+                Incl. Vat plus shipping
+              </span>
             </div>
 
             <div className="mb-6 flex items-center gap-2 text-gray-500">
               <Truck className="w-6 h-6" />
               <span className="text-sm">2-4 Day Shipping</span>
             </div>
-
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
               <div className="flex items-center border border-gray-300 rounded-lg w-fit">
@@ -153,16 +170,19 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 _id={data._id}
                 quantity={quantity}
               />
-              <CheckoutNow
-                currency="USD"
-                price={data.price}
-                description={data.description}
-                productImage={data.productImage}
-                name={data.title}
-                key={`checkout-now-${data._id}`}
-                price_id={data.price_id}
-                id={data._id}
-              />
+               <AddToWishlist 
+                  currency="USD"
+                  price={data.price}
+                  description={data.description}
+                  productImage={data.productImage}
+                  name={data.title}
+                  key={`wishlist-button-${data._id}`}
+                  price_id={data.price_id}
+                  _id={data._id}
+                  quantity={quantity}
+                />
+              
+                
             </div>
 
             <p className="mt-12 text-base text-gray-500 tracking-wide">
