@@ -5,12 +5,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { IoIosSearch, IoIosMenu } from "react-icons/io";
 import { MdOutlinePeople } from "react-icons/md";
-import { CiHeart } from "react-icons/ci";
 import { HiOutlineShoppingCart } from "react-icons/hi";
-import { FaUser } from "react-icons/fa"; // Import the user icon
+import { FaRegHeart, FaUser } from "react-icons/fa"; // Import the user icon
 import { useRouter } from "next/navigation";
 import { client } from "@/sanity/lib/client";
 import { useShoppingCart } from "use-shopping-cart";
+import { useWishlist } from "../wishlistcomponent/wishlistcontext";
 
 // Define the type for a product
 interface Product {
@@ -29,7 +29,9 @@ const Navbar = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const router = useRouter();
-  const { handleCartClick } = useShoppingCart();
+  const { handleCartClick, cartCount = 0 } = useShoppingCart();
+  const { wishlist } = useWishlist();
+  const wishlistCount = wishlist.length;
 
   // Fetch search results from Sanity
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -190,14 +192,26 @@ const Navbar = () => {
 
             {/* Icons */}
             <MdOutlinePeople className="text-2xl text-gray-600 hover:text-red-500 cursor-pointer" />
-            <CiHeart
-              className="text-2xl text-gray-600 hover:text-red-500 cursor-pointer"
+            <div
+              className="relative cursor-pointer"
               onClick={handleWishlistClick}
-            />
-            <HiOutlineShoppingCart
-              className="text-2xl text-gray-600 hover:text-red-500 cursor-pointer"
-              onClick={handleCartClick}
-            />
+            >
+              <FaRegHeart className="text-2xl text-gray-600 hover:text-red-500 transition duration-300" />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {wishlistCount}
+                </span>
+              )}
+            </div>
+            <div className="relative cursor-pointer" onClick={handleCartClick}>
+              <HiOutlineShoppingCart className="text-2xl text-gray-600 hover:text-red-500 transition duration-300" />
+
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </div>
 
             {/* Login/Signup Button with Icon */}
             <Link
@@ -234,12 +248,12 @@ const Navbar = () => {
       </nav>
 
       {/* Side Slider Menu (Mobile) */}
-      <div 
+      <div
         className={`fixed inset-0 bg-black bg-opacity-50 z-50 transition-opacity ${
-          isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible" 
+          isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
         onClick={toggleMenu}
-      > 
+      >
         <div
           className={`fixed left-0 top-0 h-full w-64 bg-white shadow-lg transform transition-transform ${
             isMenuOpen ? "translate-x-0" : "-translate-x-full"
@@ -328,19 +342,35 @@ const Navbar = () => {
 
             {/* Quick Action Icons */}
             <div className="mt-6 flex space-x-4">
-              <HiOutlineShoppingCart
-                className="text-2xl text-gray-600 hover:text-red-500 cursor-pointer"
+              <div
+                className="relative cursor-pointer"
                 onClick={handleCartClick}
-              />
-              <CiHeart className="text-2xl text-gray-600 hover:text-red-500 cursor-pointer"
-               onClick={handleWishlistClick}
-              />
+              >
+                <HiOutlineShoppingCart className="text-2xl text-gray-600 hover:text-red-500 transition duration-300" />
+
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </div>
+              <div
+                className="relative cursor-pointer"
+                onClick={handleWishlistClick}
+              >
+                <FaRegHeart className="text-2xl text-gray-600 hover:text-red-500 transition duration-300" />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    {wishlistCount}
+                  </span>
+                )}
+              </div>
               <MdOutlinePeople className="text-2xl text-gray-600 hover:text-red-500 cursor-pointer" />
             </div>
 
             {/* Login/Signup Buttons with Icons */}
-            <div  className="mt-6">
-              <button 
+            <div className="mt-6">
+              <button
                 onClick={() => handleAuthClick("/login")}
                 className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition mb-2"
               >
@@ -359,6 +389,6 @@ const Navbar = () => {
     </div>
   );
 };
-<FaUser className="mr-2" />
+<FaUser className="mr-2" />;
 
 export default Navbar;

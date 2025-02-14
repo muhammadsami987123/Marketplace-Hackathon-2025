@@ -29,31 +29,26 @@ export default function BlogPage() {
       {/* Hero Section */}
       <div className="relative h-[280px] w-full">
         <div className="container mx-auto px-4 py-8">
-      <header
-          className="relative h-48 md:h-64 w-full bg-center bg-cover rounded-md overflow-hidden mb-6"
-          style={{ backgroundImage: "url('/background.jpg')" }}
-        >
-          {/* Optional overlay and heading */}
-          {/* <div className="absolute inset-0 bg-black bg-opacity-30" />
-          <div className="relative h-full flex items-center justify-center">
-            <h1 className="text-white font-bold text-2xl md:text-4xl">Our Shop</h1>
-          </div> */}
-           <div className="absolute inset-0 flex flex-col items-center justify-center">
-           <Image src="/logo.ico" alt="logo" width={40} height={40} />
-          <h1 className="lg:text-3xl font-semibold sm:text-2xl  mb-4">Blog</h1>
-          <div className="flex items-center gap-2 text-sm">
-            <Link href="/" className="hover:underline">Home</Link>
-            <ChevronRight className="w-4 h-4" />
-            <span>Blog</span>
-          </div>
-        </div>
-        </header>
+          <header
+            className="relative h-48 md:h-64 w-full bg-center bg-cover rounded-md overflow-hidden mb-6"
+            style={{ backgroundImage: "url('/background.jpg')" }}
+          >
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <Image src="/logo.ico" alt="logo" width={40} height={40} />
+              <h1 className="lg:text-3xl font-semibold sm:text-2xl mb-4">Blog</h1>
+              <div className="flex items-center gap-2 text-sm">
+                <Link href="/" className="hover:underline">Home</Link>
+                <ChevronRight className="w-4 h-4" />
+                <span>Blog</span>
+              </div>
+            </div>
+          </header>
         </div>
       </div>
 
       {/* Blog Content with Suspense */}
       <div className="max-w-6xl mx-auto px-4 py-8 font-poppins">
-        <Suspense fallback={<p className="text-center text-xl font-semibold">Loading blogs...</p>}>
+        <Suspense fallback={<LoadingSpinner />}>
           <ClientPagination />
         </Suspense>
       </div>
@@ -61,6 +56,17 @@ export default function BlogPage() {
       {/* Features Section */}
       <FeatureSection />
     </>
+  );
+}
+
+// ---------------------------
+// Loading Spinner
+// ---------------------------
+function LoadingSpinner() {
+  return (
+    <div className="flex justify-center items-center h-64">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+    </div>
   );
 }
 
@@ -108,11 +114,37 @@ function ClientPagination() {
   }));
 
   return (
-    <div className=" grid grid-cols-1 lg:grid-cols-[1fr,350px] gap-8">
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr,350px] gap-8">
       <div>
         {loading ? (
-          <p className="text-center text-xl font-semibold">Loading...</p>
+          // Skeleton Loader for Blog Posts
+          <div className="space-y-6 mb-12">
+            {Array.from({ length: BLOGS_PER_PAGE }).map((_, index) => (
+              <div key={index} className="space-y-6">
+                <div className="relative aspect-[16/9] w-full bg-gray-200 rounded-lg animate-pulse"></div>
+                <div className="flex items-center gap-6 text-gray-500 text-sm">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 bg-gray-200 rounded-full animate-pulse"></div>
+                    <div className="w-24 h-4 bg-gray-200 rounded animate-pulse"></div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 bg-gray-200 rounded-full animate-pulse"></div>
+                    <div className="w-24 h-4 bg-gray-200 rounded animate-pulse"></div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 bg-gray-200 rounded-full animate-pulse"></div>
+                    <div className="w-24 h-4 bg-gray-200 rounded animate-pulse"></div>
+                  </div>
+                </div>
+                <div className="w-3/4 h-8 bg-gray-200 rounded animate-pulse"></div>
+                <div className="w-full h-4 bg-gray-200 rounded animate-pulse"></div>
+                <div className="w-full h-4 bg-gray-200 rounded animate-pulse"></div>
+                <div className="w-1/2 h-4 bg-gray-200 rounded animate-pulse"></div>
+              </div>
+            ))}
+          </div>
         ) : (
+          // Actual Blog Posts
           paginatedBlogs.map((post) => (
             <div key={post.slug} className="space-y-6 mb-12">
               <div className="relative aspect-[16/9] w-full">

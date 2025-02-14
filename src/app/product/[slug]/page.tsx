@@ -10,6 +10,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import AddToWishlist from "@/app/wishlistcomponent/wishlistbutton";
+import Loader from "@/app/loader";
 
 async function getData(slug: string): Promise<fullProduct | null> {
   const query = `*[_type == 'product' && slug.current == $slug][0] {
@@ -59,9 +60,9 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
   const [data, setData] = useState<fullProduct | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<fullProduct[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
-
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -76,11 +77,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   }, [slug]);
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <h1 className="text-2xl font-bold text-gray-800">Loading...</h1>
-      </div>
-    );
+    return <Loader />;
   }
 
   if (!data) {

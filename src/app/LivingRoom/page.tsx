@@ -39,7 +39,7 @@ function ProductSection() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(8);
   const [sortOption, setSortOption] = useState<string>("default");
-
+    const [loading, setLoading] = useState<boolean>(true); // Loading state
   // Fetch products from Sanity
   useEffect(() => {
     const fetchProducts = async () => {
@@ -69,6 +69,8 @@ function ProductSection() {
         setFilteredProducts(formatted);
       } catch (error) {
         console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false); // Set loading to false after fetch completes
       }
     };
 
@@ -199,62 +201,80 @@ function ProductSection() {
             </div>
           </div>
         )}
-
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {paginatedProducts.map((product) => (
-            <Link href={`/LivingRoomProduct/${product.slug}`} key={product.id}>
-              <div className="bg-white p-4 rounded-md shadow-sm hover:shadow-md transition-all">
-                <div className="relative w-full h-48 mb-4">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    fill
-                    className="object-cover rounded-md"
-                  />
-                </div>
-                <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
-                <p className="text-gray-600 text-sm line-clamp-2 mb-2">
-                  {product.description}
-                </p>
-                <p className="text-base font-bold">${product.price}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        {/* Numbered Pagination */}
-        {totalPages > 1 && (
-          <div className="flex items-center gap-2 mt-8 justify-center">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
-              const isActive = page === currentPage;
-              return (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`px-4 py-2 rounded-md transition-colors 
-                    ${
-                      isActive
-                        ? "bg-[#97733f] text-white" // Active page
-                        : "bg-[#F6EDE5] hover:bg-[#f2e6dc] text-black" // Inactive page
-                    }
-                  `}
-                >
-                  {page}
-                </button>
-              );
-            })}
-
-            {/* Next Button */}
-            {currentPage < totalPages && (
-              <button
-                onClick={() => setCurrentPage((prev) => prev + 1)}
-                className="px-4 py-2 rounded-md transition-colors bg-[#F6EDE5] hover:bg-[#f2e6dc] text-black"
+           {/* Loading State */}
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {Array.from({ length: itemsPerPage }).map((_, index) => (
+              <div
+                key={index}
+                className="bg-white p-4 rounded-md shadow-sm animate-pulse"
               >
-                Next
-              </button>
-            )}
+                <div className="w-full h-48 bg-gray-200 rounded-md mb-4"></div>
+                <div className="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+              </div>
+            ))}
           </div>
+        ) : (
+          <>
+            {/* Products Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {paginatedProducts.map((product) => (
+                <Link href={`/LivingRoomProduct/${product.slug}`} key={product.id}>
+                  <div className="bg-white p-4 rounded-md shadow-sm hover:shadow-md transition-all">
+                    <div className="relative w-full h-48 mb-4">
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        fill
+                        className="object-cover rounded-md"
+                      />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
+                    <p className="text-gray-600 text-sm line-clamp-2 mb-2">
+                      {product.description}
+                    </p>
+                    <p className="text-base font-bold">${product.price}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            {/* Numbered Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center gap-2 mt-8 justify-center">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                  const isActive = page === currentPage;
+                  return (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`px-4 py-2 rounded-md transition-colors 
+                        ${
+                          isActive
+                            ? "bg-[#97733f] text-white"
+                            : "bg-[#F6EDE5] hover:bg-[#f2e6dc] text-black"
+                        }
+                      `}
+                    >
+                      {page}
+                    </button>
+                  );
+                })}
+
+                {/* Next Button */}
+                {currentPage < totalPages && (
+                  <button
+                    onClick={() => setCurrentPage((prev) => prev + 1)}
+                    className="px-4 py-2 rounded-md transition-colors bg-[#F6EDE5] hover:bg-[#f2e6dc] text-black"
+                  >
+                    Next
+                  </button>
+                )}
+              </div>
+            )}
+          </>
         )}
       </div>
 

@@ -80,11 +80,11 @@ export default function ShoppingCartModal() {
                       <div className="ml-4 flex flex-1 flex-col">
                         <div>
                           <div className="flex justify-between text-base font-medium text-gray-900">
-                            <h3>{entry.name}</h3>
+                            <h3>{entry.name }</h3>
                             <p className="ml-4">${entry.price}</p>
                           </div>
                           <p className="mt-1 text-sm text-gray-500 line-clamp-2">
-                            {entry.description}
+                            {entry.description }
                           </p>
                         </div>
 

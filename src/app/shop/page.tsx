@@ -29,6 +29,7 @@ interface SanityProduct {
 function ProductSection() {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true); // Loading state
 
   // Filtering + Sorting
   const [priceRange, setPriceRange] = useState<number>(500);
@@ -50,7 +51,6 @@ function ProductSection() {
         description,
         price,
         "productImage": productImage.asset->url,
-        
       }`;
 
       try {
@@ -69,6 +69,8 @@ function ProductSection() {
         setFilteredProducts(formatted);
       } catch (error) {
         console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false); // Set loading to false after fetch completes
       }
     };
 
@@ -80,7 +82,6 @@ function ProductSection() {
    */
   const applyFiltersAndSorting = useCallback(
     (items: Product[]) => {
-      // Use 'const' because we're not reassigning the reference
       const result = items.filter(
         (product) =>
           product.price <= priceRange &&
@@ -134,20 +135,15 @@ function ProductSection() {
           className="relative h-48 md:h-64 w-full bg-center bg-cover rounded-md overflow-hidden mb-6"
           style={{ backgroundImage: "url('/background.jpg')" }}
         >
-          {/* Optional overlay and heading */}
-          {/* <div className="absolute inset-0 bg-black bg-opacity-30" />
-          <div className="relative h-full flex items-center justify-center">
-            <h1 className="text-white font-bold text-2xl md:text-4xl">Our Shop</h1>
-          </div> */}
-           <div className="absolute inset-0 flex flex-col items-center justify-center">
-           <Image src="/logo.ico" alt="logo" width={40} height={40} />
-          <h1 className="lg:text-3xl font-semibold sm:text-2xl  mb-4">Shop</h1>
-          <div className="flex items-center gap-2 text-sm">
-            <Link href="/" className="hover:underline">Home</Link>
-            <ChevronRight className="w-4 h-4" />
-            <span>Shop</span>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <Image src="/logo.ico" alt="logo" width={40} height={40} />
+            <h1 className="lg:text-3xl font-semibold sm:text-2xl mb-4">Shop</h1>
+            <div className="flex items-center gap-2 text-sm">
+              <Link href="/" className="hover:underline">Home</Link>
+              <ChevronRight className="w-4 h-4" />
+              <span>Shop</span>
+            </div>
           </div>
-        </div>
         </header>
 
         {/* Filter Bar */}
@@ -193,68 +189,86 @@ function ProductSection() {
                   <option value="shoes">Shoes</option>
                   <option value="bag">Bag</option>
                   <option value="dress">Dress</option>
-                  {/* Add more categories as needed */}
                 </select>
               </div>
             </div>
           </div>
         )}
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {paginatedProducts.map((product) => (
-            <Link href={`/product/${product.slug}`} key={product.id}>
-              <div className="bg-white p-4 rounded-md shadow-sm hover:shadow-md transition-all">
-                <div className="relative w-full h-48 mb-4">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    fill
-                    className="object-cover rounded-md"
-                  />
-                </div>
-                <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
-                <p className="text-gray-600 text-sm line-clamp-2 mb-2">
-                  {product.description}
-                </p>
-                <p className="text-base font-bold">${product.price}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        {/* Numbered Pagination */}
-        {totalPages > 1 && (
-          <div className="flex items-center gap-2 mt-8 justify-center">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
-              const isActive = page === currentPage;
-              return (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`px-4 py-2 rounded-md transition-colors 
-                    ${
-                      isActive
-                        ? "bg-[#97733f] text-white" // Active page
-                        : "bg-[#F6EDE5] hover:bg-[#f2e6dc] text-black" // Inactive page
-                    }
-                  `}
-                >
-                  {page}
-                </button>
-              );
-            })}
-
-            {/* Next Button */}
-            {currentPage < totalPages && (
-              <button
-                onClick={() => setCurrentPage((prev) => prev + 1)}
-                className="px-4 py-2 rounded-md transition-colors bg-[#F6EDE5] hover:bg-[#f2e6dc] text-black"
+        {/* Loading State */}
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {Array.from({ length: itemsPerPage }).map((_, index) => (
+              <div
+                key={index}
+                className="bg-white p-4 rounded-md shadow-sm animate-pulse"
               >
-                Next
-              </button>
-            )}
+                <div className="w-full h-48 bg-gray-200 rounded-md mb-4"></div>
+                <div className="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+              </div>
+            ))}
           </div>
+        ) : (
+          <>
+            {/* Products Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {paginatedProducts.map((product) => (
+                <Link href={`/product/${product.slug}`} key={product.id}>
+                  <div className="bg-white p-4 rounded-md shadow-sm hover:shadow-md transition-all">
+                    <div className="relative w-full h-48 mb-4">
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        fill
+                        className="object-cover rounded-md"
+                      />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
+                    <p className="text-gray-600 text-sm line-clamp-2 mb-2">
+                      {product.description}
+                    </p>
+                    <p className="text-base font-bold">${product.price}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            {/* Numbered Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center gap-2 mt-8 justify-center">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                  const isActive = page === currentPage;
+                  return (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`px-4 py-2 rounded-md transition-colors 
+                        ${
+                          isActive
+                            ? "bg-[#97733f] text-white"
+                            : "bg-[#F6EDE5] hover:bg-[#f2e6dc] text-black"
+                        }
+                      `}
+                    >
+                      {page}
+                    </button>
+                  );
+                })}
+
+                {/* Next Button */}
+                {currentPage < totalPages && (
+                  <button
+                    onClick={() => setCurrentPage((prev) => prev + 1)}
+                    className="px-4 py-2 rounded-md transition-colors bg-[#F6EDE5] hover:bg-[#f2e6dc] text-black"
+                  >
+                    Next
+                  </button>
+                )}
+              </div>
+            )}
+          </>
         )}
       </div>
 

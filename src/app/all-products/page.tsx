@@ -28,6 +28,7 @@ interface SanityProduct {
 export default function ProductSection() {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true); // Loading state
 
   // Filtering + Sorting
   const [priceRange] = useState<number>(500);
@@ -67,6 +68,8 @@ export default function ProductSection() {
         setFilteredProducts(formatted);
       } catch (error) {
         console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false); // Set loading to false after fetch completes
       }
     };
 
@@ -153,6 +156,23 @@ export default function ProductSection() {
           onSortOptionChange={(value) => setSortOption(value)}
           onFilterClick={() => setShowFilters(!showFilters)}
         />
+         {/* Loading State */}
+         {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {Array.from({ length: itemsPerPage }).map((_, index) => (
+              <div
+                key={index}
+                className="bg-white p-4 rounded-md shadow-sm animate-pulse"
+              >
+                <div className="w-full h-48 bg-gray-200 rounded-md mb-4"></div>
+                <div className="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {paginatedProducts.map((product) => (
             <Link href={`/product/${product.slug}`} key={product.id}>
@@ -206,6 +226,8 @@ export default function ProductSection() {
               </button>
             )}
           </div>
+        )}
+        </>
         )}
       
       </div>
