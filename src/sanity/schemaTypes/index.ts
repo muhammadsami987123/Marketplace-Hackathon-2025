@@ -7,6 +7,7 @@ import blog from '../schema/blog'
 import { Livingroom } from '../schema/Livingroom'
 import { Bedroom } from '../schema/Bedroom'
 import { Diningroom } from '../schema/diningroom'
+import order from '../schema/order'
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [product , category , heroBanner , slide , blog , Livingroom , Bedroom , Diningroom ],
+  types: [product , category , heroBanner , slide , blog , Livingroom , Bedroom , Diningroom , order ],
 }
