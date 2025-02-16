@@ -16,6 +16,7 @@ async function getData(slug: string): Promise<fullProduct | null> {
   const query = `*[_type == 'product' && slug.current == $slug][0] {
     _id,
     "productImage": productImage.asset->url,
+    "productImages": productImages[]{ "url": asset->url },
     price,
     description,
     title,
@@ -88,74 +89,79 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     );
   }
 
-  const imageUrls = data.productImage ? [data.productImage] : ["/fallback.jpg"];
+  const imageUrls = data.productImages 
+    ? data.productImages.map(img => img.url)
+    : data.productImage 
+      ? [data.productImage] 
+      : ["/fallback.jpg"];
 
   const incrementQuantity = () => setQuantity((prev) => prev + 1);
   const decrementQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   return (
-    <div className="bg-[#f5f0e8]">
+    <div className="bg-[#f5f0e8] min-h-screen py-8">
       <div className="mx-auto max-w-screen-xl px-4 md:px-8">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          <ImageGallery images={imageUrls} />
-          <div className="md:py-8">
-            <div className="mb-2 md:mb-3">
-              
+        <div className="grid gap-8 md:grid-cols-2">
+          {/* Image Gallery Section */}
+          <div className="md:sticky md:top-20 md:h-fit">
+            <ImageGallery images={imageUrls} />
+          </div>
+
+          {/* Product Details Section */}
+          <div className="flex flex-col space-y-6">
+            {/* Product Title and Rating */}
+            <div className="space-y-4">
               <h2 className="text-2xl font-bold text-gray-800 lg:text-3xl">
                 {data.title}
               </h2>
+              
+              <div className="flex items-center gap-3">
+                <Button variant="outline" size="sm" className="rounded-full gap-x-2">
+                  <span className="text-sm">4.2</span>
+                  <Star className="h-4 w-4" />
+                </Button>
+                <span className="text-sm text-gray-500">56 Ratings</span>
+              </div>
             </div>
 
-            <div className="mb-6 flex items-center gap-3 md:mb-10">
-              <Button className="rounded-full gap-x-2">
-                <span className="text-sm">4.2</span>
-                <Star className="h-5 w-5" />
-              </Button>
-
-              <span className="text-sm text-gray-500 transition duration-100">
-                56 Ratings
-              </span>
-            </div>
-
-            <div className="mb-4">
-              <div className="flex items-end gap-2">
-                <span className="text-xl font-bold text-gray-800 md:text-2xl">
+            {/* Price Section */}
+            <div className="space-y-2 pb-6 border-b border-gray-200">
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl font-bold text-gray-800">
                   ${data.price}
                 </span>
-                <span className="mb-0.5 text-red-500 line-through">
+                <span className="text-lg text-red-500 line-through">
                   ${data.price + 30}
                 </span>
               </div>
-
-              <span className="text-sm text-gray-500">
-                Incl. Vat plus shipping
-              </span>
+              <div className="flex items-center gap-2 text-gray-500">
+                <Truck className="w-5 h-5" />
+                <span className="text-sm">2-4 Day Shipping</span>
+              </div>
             </div>
 
-            <div className="mb-6 flex items-center gap-2 text-gray-500">
-              <Truck className="w-6 h-6" />
-              <span className="text-sm">2-4 Day Shipping</span>
-            </div>
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+            {/* Quantity Selector */}
+            <div className="space-y-3">
+              <label className="text-sm font-medium text-gray-700">Quantity</label>
               <div className="flex items-center border border-gray-300 rounded-lg w-fit">
                 <button
                   onClick={decrementQuantity}
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-l-lg transition-colors"
+                  className="px-4 py-2 hover:bg-gray-50 text-gray-600 transition-colors"
                 >
                   -
                 </button>
-                <span className="px-4 py-2 bg-white text-gray-800">{quantity}</span>
+                <span className="w-12 text-center py-2 text-gray-800">{quantity}</span>
                 <button
                   onClick={incrementQuantity}
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-r-lg transition-colors"
+                  className="px-4 py-2 hover:bg-gray-50 text-gray-600 transition-colors"
                 >
                   +
                 </button>
               </div>
             </div>
 
-            <div className="flex gap-2.5">
+            {/* Action Buttons */}
+            <div className="flex gap-4 pt-6">
               <AddToBag
                 currency="USD"
                 price={data.price}
@@ -167,56 +173,62 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 _id={data._id}
                 quantity={quantity}
               />
-               <AddToWishlist 
-                  currency="USD"
-                  price={data.price}
-                  description={data.description}
-                  productImage={data.productImage}
-                  name={data.title}
-                  key={`wishlist-button-${data._id}`}
-                  price_id={data.price_id}
-                  _id={data._id}
-                  quantity={quantity}
-                />
-              
-                
+              <AddToWishlist 
+                currency="USD"
+                price={data.price}
+                description={data.description}
+                productImage={data.productImage}
+                name={data.title}
+                key={`wishlist-button-${data._id}`}
+                price_id={data.price_id}
+                _id={data._id}
+                quantity={quantity}
+              />
             </div>
 
-            <p className="mt-12 text-base text-gray-500 tracking-wide">
-              {data.description
-                ? data.description.split(" ").slice(0, 50).join(" ") + "..."
-                : "No description available"}
-            </p>
+            {/* Product Description */}
+            <div className="pt-6 border-t border-gray-200">
+              <h3 className="text-lg font-semibold mb-3">Product Description</h3>
+              <p className="text-gray-600 leading-relaxed">
+                {data.description
+                  ? data.description.split(" ").slice(0, 50).join(" ") + "..."
+                  : "No description available"}
+              </p>
+            </div>
           </div>
         </div>
 
         {/* Related Products Section */}
-               {/* Related Products Section */}
-               <div className="bg-[#f5f0e8] py-8 px-4 rounded-lg">
-          <h3 className="text-xl font-bold text-gray-800 mb-6 text-center">Related Products</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="mt-16 pt-8 border-t border-gray-200">
+          <h3 className="text-xl font-bold text-gray-800 mb-8">Related Products</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {relatedProducts.map((product) => (
-              <Link key={product._id} href={`/product/${product.slug}`}>
-                <div className="bg-white p-4 rounded-md shadow-sm hover:shadow-md transition-all">
-                  <div className="relative w-full h-48 mb-4">
+              <Link 
+                key={product._id} 
+                href={`/product/${product.slug}`}
+                className="group"
+              >
+                <div className="bg-white rounded-lg overflow-hidden shadow-sm transition-shadow hover:shadow-md">
+                  <div className="relative aspect-square">
                     <Image
                       src={product.productImage}
                       alt={product.title}
                       fill
-                      className="object-cover rounded-md"
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
-                  <h4 className="text-lg font-semibold mb-2">{product.title}</h4>
-                  <p className="text-gray-600 text-sm line-clamp-2 mb-2">
-                    {product.description ? product.description.split(" ").slice(0, 20).join(" ") + "..." : "No description available"}
-                  </p>
-                  <p className="text-base font-bold">${product.price}</p>
+                  <div className="p-4">
+                    <h4 className="font-medium text-gray-800 mb-2 line-clamp-1">{product.title}</h4>
+                    <p className="text-gray-500 text-sm line-clamp-2 mb-2">
+                      {product.description}
+                    </p>
+                    <p className="text-lg font-bold text-gray-900">${product.price}</p>
+                  </div>
                 </div>
               </Link>
             ))}
           </div>
         </div>
-
       </div>
     </div>
   );

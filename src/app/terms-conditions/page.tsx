@@ -10,7 +10,7 @@ const terms = [
       "Welcome to Funiro. By using our website, you agree to comply with and be bound by the following terms and conditions. Please review them carefully before using our services.",
   },
   {
-    title: "2. Use of the Website",
+    title: "2. Use of the Website", 
     content:
       "You agree to use our website only for lawful purposes. Unauthorized use of this website may give rise to a claim for damages and/or be a criminal offense.",
   },
@@ -74,28 +74,58 @@ export default function TermsConditionsPage() {
   };
 
   return (
-    <div className="bg-[#f5f0e8] max-w-4xl mx-auto py-12 px-6">
-      <h1 className="text-4xl font-bold text-center mb-6">Terms & Conditions</h1>
-      <p className="text-gray-600 text-center mb-8">
-        Please read our Terms & Conditions carefully before using our services.
-      </p>
+    <div className="min-h-screen bg-gradient-to-b from-[#f5f0e8] to-white">
+      <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        {/* Header Section */}
+        <div className="text-center mb-12">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+            Terms & Conditions
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Please read our Terms & Conditions carefully before using our services.
+          </p>
+        </div>
 
-      {/* Terms Section */}
-      <div className="space-y-4">
-        {terms.map((term, index) => (
-          <div key={index} className="border border-gray-300 rounded-lg p-4">
-            <button
-              className="flex justify-between items-center w-full text-lg font-semibold focus:outline-none"
-              onClick={() => toggleTerm(index)}
+        {/* Terms Section */}
+        <div className="space-y-4">
+          {terms.map((term, index) => (
+            <div 
+              key={index} 
+              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200"
             >
-              {term.title}
-              {openIndex === index ? <ChevronUp /> : <ChevronDown />}
-            </button>
-            {openIndex === index && (
-              <p className="mt-2 text-gray-600">{term.content}</p>
-            )}
-          </div>
-        ))}
+              <button
+                className="w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-[#e7c8a0] focus:ring-opacity-50 rounded-xl"
+                onClick={() => toggleTerm(index)}
+                aria-expanded={openIndex === index}
+              >
+                <div className="flex justify-between items-center">
+                  <span className="text-lg font-semibold text-gray-900 sm:text-xl">
+                    {term.title}
+                  </span>
+                  <span className="ml-6 flex-shrink-0 text-gray-500">
+                    {openIndex === index ? (
+                      <ChevronUp className="h-6 w-6 transition-transform duration-200" />
+                    ) : (
+                      <ChevronDown className="h-6 w-6 transition-transform duration-200" />
+                    )}
+                  </span>
+                </div>
+              </button>
+              {openIndex === index && (
+                <div className="px-6 pb-4">
+                  <p className="text-gray-600 text-base sm:text-lg leading-relaxed">
+                    {term.content}
+                  </p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Footer Note */}
+        <div className="mt-12 text-center text-gray-500 text-sm">
+          <p>Last updated: {new Date().toLocaleDateString()}</p>
+        </div>
       </div>
     </div>
   );

@@ -27,21 +27,22 @@ export default function ImageGallery({ images }: iAppProps) {
   return (
     <div className="grid gap-4 lg:grid-cols-5">
       {/* Small Thumbnail Images - Scrollable on Mobile */}
-      <div className="order-last flex gap-2 overflow-x-auto lg:order-none lg:flex-col lg:overflow-hidden">
+      <div className="order-last flex gap-4 overflow-x-auto lg:order-none lg:flex-col lg:overflow-hidden">
         {images.map((image, idx) => {
-          const imageUrl = urlFor(image).width(200).height(200).quality(90).url();
+          const imageUrl = urlFor(image).width(400).height(400).url();
           return (
             <div
               key={idx}
-              className="overflow-hidden rounded-lg bg-gray-100 w-24 h-24 sm:w-32 sm:h-32 lg:w-auto lg:h-auto"
+              className={`relative aspect-square overflow-hidden rounded-lg bg-gray-100 w-24 sm:w-32 lg:w-full flex-shrink-0 cursor-pointer 
+                ${bigImage === image ? 'ring-2 ring-offset-1 ring-blue-500' : 'hover:ring-2 hover:ring-offset-1 hover:ring-gray-300'}`}
+              onClick={() => handleSmallImageClick(image)}
             >
               <Image
                 src={imageUrl}
-                width={200}
-                height={200}
+                fill
                 alt={`Product image ${idx + 1}`}
-                className="h-full w-full object-cover object-center cursor-pointer hover:scale-110 transition-transform duration-300"
-                onClick={() => handleSmallImageClick(image)}
+                className="object-cover object-center transition-opacity duration-200"
+                sizes="(max-width: 768px) 96px, (max-width: 1024px) 128px, 20vw"
               />
             </div>
           );
@@ -49,17 +50,16 @@ export default function ImageGallery({ images }: iAppProps) {
       </div>
 
       {/* Large Image Display */}
-      <div className="relative overflow-hidden rounded-lg bg-gray-100 lg:col-span-4">
+      <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100 lg:col-span-4">
         {bigImage ? (
-          <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px]">
-            <Image
-              src={urlFor(bigImage).width(1000).height(1000).quality(90).url()}
-              alt="Main product image"
-              fill
-              className="object-cover object-center"
-              priority // Ensures it loads first
-            />
-          </div>
+          <Image
+            src={urlFor(bigImage).width(1200).height(1200).url()}
+            alt="Main product image"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 60vw"
+            className="object-cover object-center"
+            priority
+          />
         ) : (
           <div className="flex items-center justify-center h-full bg-gray-100 text-gray-500">
             No Image Available

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Search } from "lucide-react";
 
 const faqs = [
   // 📦 ORDER & SHIPPING
@@ -82,17 +82,62 @@ export default function FAQPage() {
   );
 
   return (
-    <div className=" bg-[#f5f0e8] max-w-4xl mx-auto py-12 px-6">
-      <h1 className="text-4xl font-bold text-center mb-6">Frequently Asked Questions</h1>
-      <input type="text" placeholder="Search..." className="w-full p-3 pl-10 border border-gray-300 rounded-lg mb-6" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-      {filteredFAQs.map((faq, index) => (
-        <div key={index} className="border border-gray-200 rounded-lg p-4">
-          <button onClick={() => toggleFAQ(index)} className="flex justify-between w-full text-lg font-semibold">
-            {faq.question} {openIndex === index ? <ChevronUp /> : <ChevronDown />}
-          </button>
-          {openIndex === index && <p className="mt-2 text-gray-600">{faq.answer}</p>}
+    <div className="min-h-screen bg-[#f5f0e8] py-8 sm:py-12 md:py-16 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 sm:mb-6 md:mb-8 text-gray-900">
+          Frequently Asked Questions
+        </h1>
+        <p className="text-sm sm:text-base text-center text-gray-600 mb-6 sm:mb-8">
+          Find answers to common questions about our furniture and services
+        </p>
+        
+        <div className="relative mb-6 sm:mb-8">
+          <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+            <Search className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+          </div>
+          <input
+            type="text"
+            placeholder="Search questions..."
+            className="w-full p-3 sm:p-4 pl-10 sm:pl-12 pr-4 text-sm sm:text-base rounded-lg sm:rounded-xl border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
-      ))}
+
+        <div className="space-y-3 sm:space-y-4">
+          {filteredFAQs.length === 0 ? (
+            <div className="text-center py-6 sm:py-8 text-sm sm:text-base text-gray-500">
+              No questions found matching your search
+            </div>
+          ) : (
+            filteredFAQs.map((faq, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-lg sm:rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200"
+              >
+                <button
+                  onClick={() => toggleFAQ(index)}
+                  className="w-full px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center text-left"
+                >
+                  <span className="text-base sm:text-lg font-medium text-gray-900 pr-4">{faq.question}</span>
+                  <span className="ml-2 sm:ml-4 flex-shrink-0">
+                    {openIndex === index ? (
+                      <ChevronUp className="h-5 w-5 sm:h-6 sm:w-6 text-blue-500" />
+                    ) : (
+                      <ChevronDown className="h-5 w-5 sm:h-6 sm:w-6 text-gray-400" />
+                    )}
+                  </span>
+                </button>
+                {openIndex === index && (
+                  <div className="px-4 sm:px-6 pb-3 sm:pb-4 text-sm sm:text-base text-gray-600 animate-fadeIn">
+                    {faq.answer}
+                  </div>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,9 +1,10 @@
 export interface fullProduct {
 stripeProductId: string;
-price_id: any;
+price_id: string;
 _id: string;
-images: any;
+images: string[];
 price: number;
+productImages: {url: string}[];
 
 slug: string;
 description: string;
