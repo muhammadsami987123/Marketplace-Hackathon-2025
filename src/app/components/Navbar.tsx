@@ -6,11 +6,17 @@ import Image from "next/image";
 import { IoIosSearch, IoIosMenu } from "react-icons/io";
 import { MdOutlinePeople } from "react-icons/md";
 import { HiOutlineShoppingCart } from "react-icons/hi";
-import { FaRegHeart, FaUser } from "react-icons/fa"; // Import the user icon
+import { FaRegHeart } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { client } from "@/sanity/lib/client";
 import { useShoppingCart } from "use-shopping-cart";
 import { useWishlist } from "../wishlistcomponent/wishlistcontext";
+import {
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton
+} from '@clerk/nextjs'
 
 // Define the type for a product
 interface Product {
@@ -78,16 +84,12 @@ const Navbar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  // Handle login/signup click
-  const handleAuthClick = (path: string) => {
-    setIsMenuOpen(false); // Close the menu
-    router.push(path);
-  };
+
 
   return (
     <div>
       {/* Desktop Navbar */}
-      <nav className="bg-white shadow-md  top-0 z-50 hidden md:block">
+      <nav className="bg-white shadow-md top-0 z-50 hidden md:block">
         <div className="container mx-auto px-4 py-2 flex justify-between items-center">
           {/* Logo */}
           <Link href="/" className="flex items-center">
@@ -214,13 +216,15 @@ const Navbar = () => {
             </div>
 
             {/* Login/Signup Button with Icon */}
-            <Link
-              href="/login"
-              className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
-            >
-              <FaUser className="mr-2" />
-              <span>Login/Signup</span>
-            </Link>
+            <div className="flex items-center">
+              
+              <SignedOut>
+                <SignInButton />
+              </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+            </div>
           </div>
         </div>
       </nav>
@@ -240,10 +244,18 @@ const Navbar = () => {
             <span className="text-black font-bold text-2xl ml-2">Furniro</span>
           </Link>
 
-          {/* Three-Dot Menu Button */}
-          <button onClick={toggleMenu} className="text-2xl">
-            <IoIosMenu />
-          </button>
+          {/* Three-Dot Menu Button and Sign In Button */}
+          <div className="flex items-center space-x-2">
+            <button onClick={toggleMenu} className="text-2xl">
+              <IoIosMenu />
+            </button>
+            <SignedOut>
+              <SignInButton  />
+            </SignedOut>
+            <SignedIn>
+              <UserButton  />
+            </SignedIn>
+          </div>
         </div>
       </nav>
 
@@ -367,28 +379,14 @@ const Navbar = () => {
               </div>
               <MdOutlinePeople className="text-2xl text-gray-600 hover:text-red-500 cursor-pointer" />
             </div>
-
+             
             {/* Login/Signup Buttons with Icons */}
-            <div className="mt-6">
-              <button
-                onClick={() => handleAuthClick("/login")}
-                className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition mb-2"
-              >
-                Login
-              </button>
-              <button
-                onClick={() => handleAuthClick("/signup")}
-                className="w-full bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition"
-              >
-                Sign Up
-              </button>
-            </div>
+           
           </div>
         </div>
       </div>
     </div>
   );
 };
-<FaUser className="mr-2" />;
 
 export default Navbar;

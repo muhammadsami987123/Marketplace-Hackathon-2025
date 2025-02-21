@@ -27,7 +27,7 @@ export default function BlogPage() {
   return (
     <>
       {/* Hero Section */}
-      <div className="relative h-[280px] w-full">
+      <div className="relative h-[280px] bg-[#f5f0e8] w-full">
         <div className="container mx-auto px-4 py-8">
           <header
             className="relative h-48 md:h-64 w-full bg-center bg-cover rounded-md overflow-hidden mb-6"

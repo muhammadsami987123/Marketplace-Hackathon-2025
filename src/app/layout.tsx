@@ -6,6 +6,10 @@ import Footer from "./components/Footer";
 import CartProvider from "./providers";
 import ShoppingCartModal from "@/app/ShoppingCartModal";
 import { WishlistProvider } from "./wishlistcomponent/wishlistcontext";
+import {
+  ClerkProvider,
+  } from '@clerk/nextjs'
+
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,6 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <ClerkProvider>
     <html lang="en">
       <head>
         <link rel="icon" href="/logo.ico" />
@@ -46,5 +51,6 @@ export default function RootLayout({
         </WishlistProvider>
       </body>
     </html>
+    </ClerkProvider>
   );
 }
